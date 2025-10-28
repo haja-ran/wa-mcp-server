@@ -64,6 +64,77 @@ Génère du CSS pour personnaliser un thème.
 
 Ce serveur peut être intégré dans des clients MCP pour fournir des fonctionnalités liées à Web Awesome.
 
+## Intégration avec GitHub Copilot
+
+### Prérequis
+
+- VS Code 1.102 ou supérieur avec l'extension GitHub Copilot Chat
+- Node.js (v18 ou supérieur)
+- Le serveur MCP compilé (`npm run build`)
+
+### Configuration
+
+La méthode recommandée pour ajouter un serveur MCP est de créer un fichier `mcp.json` dans votre workspace.
+
+1. **Créer le fichier `mcp.json` à la racine de votre projet :**
+   ```json
+   {
+     "mcpServers": {
+       "web-awesome": {
+         "command": "node",
+         "args": ["${workspaceFolder}/dist/index.js"]
+       }
+     }
+   }
+   ```
+
+2. **Démarrer le serveur :**
+   ```bash
+   npm start
+   ```
+
+3. **Confirmer la confiance :**
+   Lors du premier démarrage, VS Code vous demandera de confirmer que vous faites confiance au serveur MCP. Acceptez pour permettre l'accès aux outils.
+
+### Utilisation dans GitHub Copilot Chat
+
+Une fois configuré, vous pouvez utiliser les outils Web Awesome dans GitHub Copilot Chat :
+
+```
+@web-awesome List all available components
+@web-awesome Generate code for a wa-button component
+@web-awesome Get documentation for wa-input
+@web-awesome Create a custom theme with brand color #ff6b6b
+```
+
+Vous pouvez aussi utiliser les outils en mode agent ou les référencer explicitement avec `#tool-name`.
+
+### Gestion des serveurs MCP
+
+- **Lister les serveurs :** `Cmd/Ctrl + Shift + P` → "MCP: List Servers"
+- **Redémarrer un serveur :** Sélectionnez le serveur dans la liste et choisissez "Restart"
+- **Voir les logs :** Sélectionnez "Show Output" pour diagnostiquer les problèmes
+- **Remettre à zéro le cache :** "MCP: Reset Cached Tools" si les outils ne s'affichent pas
+
+### Dépannage
+
+- **Serveur ne démarre pas :** Vérifiez que `npm run build` a été exécuté et que le fichier `dist/index.js` existe
+- **Outils non disponibles :** Utilisez "MCP: Reset Cached Tools" et redémarrez VS Code
+- **Erreur de confiance :** Utilisez "MCP: Reset Trust" pour réinitialiser
+- **Chemin incorrect :** Le `${workspaceFolder}` doit pointer vers la racine de votre projet
+
+### Ressources disponibles
+
+Le serveur expose des ressources MCP pour accéder aux données JSON des composants :
+
+- `wa://components/wa-button` - Données complètes du composant button
+- `wa://components/wa-input` - Données complètes du composant input
+- etc.
+
+### Sécurité
+
+⚠️ **Important :** Les serveurs MCP peuvent exécuter du code arbitraire sur votre machine. Ne configurez que des serveurs provenant de sources fiables.
+
 ## Licence
 
 MIT
