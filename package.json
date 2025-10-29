@@ -10,7 +10,9 @@
     "dev": "tsx src/index.ts",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
-    "fetch-data": "tsx scripts/fetch-components.ts"
+    "fetch-data": "tsx scripts/fetch-components.ts",
+    "docker:build": "docker build -t wa-mcp-server .",
+    "docker:run": "docker run -p 3000:3000 wa-mcp-server"
   },
   "keywords": [
     "mcp",

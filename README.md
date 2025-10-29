@@ -1,6 +1,6 @@
 # Web Awesome MCP Server
 
-Un serveur MCP (Model Context Protocol) pour les composants Web Awesome, fournissant des outils pour explorer, générer du code et personnaliser les composants UI.
+A Model Context Protocol (MCP) server for Web Awesome components, providing tools to explore, generate code, and customize UI components.
 
 ## Installation
 
@@ -8,145 +8,141 @@ Un serveur MCP (Model Context Protocol) pour les composants Web Awesome, fournis
 npm install
 ```
 
-## Construction
+## Building
 
 ```bash
 npm run build
 ```
 
-## Démarrage
+## Running Locally
 
 ```bash
 npm start
 ```
 
-Pour le développement :
+The server will start on `http://localhost:3000` by default.
+
+## Environment Variables
+
+- `PORT` - Server port (default: 3000)
+
+## Deployment
+
+### Docker
+
+Build and run with npm scripts:
 
 ```bash
-npm run dev
+npm run docker:build
+npm run docker:run
 ```
 
-## Tests
+Or manually:
 
 ```bash
-npm test
+docker build -t wa-mcp-server .
+docker run -p 3000:3000 wa-mcp-server
 ```
 
-## Outils Disponibles
+### Cloud Platforms
+
+#### Vercel
+
+1. Install Vercel CLI: `npm i -g vercel`
+2. Deploy: `vercel`
+3. Configure environment variables in Vercel dashboard
+
+#### Railway
+
+1. Connect your repository to Railway
+2. Set build command: `npm run build`
+3. Set start command: `npm start`
+4. Configure environment variables
+
+#### Render
+
+1. Connect your repository to Render
+2. Set build command: `npm run build`
+3. Set start command: `npm start`
+4. Configure environment variables and port
+
+### Systemd Service
+
+Create `/etc/systemd/system/wa-mcp-server.service`:
+
+```ini
+[Unit]
+Description=Web Awesome MCP Server
+After=network.target
+
+[Service]
+Type=simple
+User=your-user
+WorkingDirectory=/path/to/wa-mcp-server
+ExecStart=/usr/bin/node dist/index.js
+Restart=always
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+
+```bash
+sudo systemctl enable wa-mcp-server
+sudo systemctl start wa-mcp-server
+```
+
+## API Endpoints
+
+- `GET /sse` - Establishes SSE connection for MCP communication
+- `POST /message?sessionId=<id>` - Sends MCP messages
+
+## Available Tools
 
 ### listComponents
-Liste tous les composants Web Awesome disponibles.
+Lists all available Web Awesome components.
 
-**Paramètres :**
-- `category` (optionnel) : Filtrer par catégorie.
+**Parameters:**
+- `category` (optional): Filter by category
 
 ### generateComponentCode
-Génère du code HTML pour un composant spécifique.
+Generates HTML code for a specific component.
 
-**Paramètres :**
-- `tagName` (requis) : Le nom du tag (ex: `wa-button`).
-- `properties` (optionnel) : Objet avec les propriétés.
-- `content` (optionnel) : Contenu du slot par défaut.
+**Parameters:**
+- `tagName` (required): Component tag name (e.g., `wa-button`)
+- `properties` (optional): Component properties object
+- `content` (optional): Default slot content
 
 ### getComponentDocs
-Récupère la documentation détaillée d'un composant.
+Retrieves detailed documentation for a component.
 
-**Paramètres :**
-- `tagName` (requis) : Le nom du tag.
+**Parameters:**
+- `tagName` (required): Component tag name
 
 ### themeCustomizer
-Génère du CSS pour personnaliser un thème.
+Generates CSS for theme customization.
 
-**Paramètres :**
-- `variables` (requis) : Objet avec les variables CSS (ex: `{ "--wa-color-brand": "#ff0000" }`).
+**Parameters:**
+- `variables` (required): CSS variables object (e.g., `{ "--wa-color-brand": "#ff0000" }`)
 
-## Utilisation avec MCP
+### listUtilities
+Lists all available Web Awesome utilities.
 
-Ce serveur peut être intégré dans des clients MCP pour fournir des fonctionnalités liées à Web Awesome. Il utilise le transport HTTP/SSE.
+### getUtilityDocs
+Retrieves documentation for a utility class.
 
-## Intégration avec GitHub Copilot
+**Parameters:**
+- `className` (required): Utility class name
 
-### Prérequis
+## MCP Resources
 
-- VS Code 1.102 ou supérieur avec l'extension GitHub Copilot Chat
-- Node.js (v18 ou supérieur)
-- Le serveur MCP compilé (`npm run build`)
+The server provides MCP resources for component and utility data:
 
-### Configuration
+- `wa://components/<tagName>` - Component JSON data
+- `wa://utilities/<className>` - Utility JSON data
 
-La méthode recommandée pour ajouter un serveur MCP HTTP est de créer un fichier `mcp.json` dans votre workspace.
-
-1. **Créer le fichier `mcp.json` à la racine de votre projet :**
-   ```json
-   {
-     "mcpServers": {
-       "web-awesome": {
-         "command": "node",
-         "args": ["${workspaceFolder}/dist/index.js"],
-         "env": {
-           "MCP_TRANSPORT": "http"
-         }
-       }
-     }
-   }
-   ```
-
-2. **Démarrer le serveur :**
-   ```bash
-   npm start
-   ```
-
-   Le serveur sera disponible sur `http://localhost:3000`
-
-3. **Confirmer la confiance :**
-   Lors du premier démarrage, VS Code vous demandera de confirmer que vous faites confiance au serveur MCP. Acceptez pour permettre l'accès aux outils.
-
-### Utilisation dans GitHub Copilot Chat
-
-Une fois configuré, vous pouvez utiliser les outils Web Awesome dans GitHub Copilot Chat :
-
-```
-@web-awesome List all available components
-@web-awesome Generate code for a wa-button component
-@web-awesome Get documentation for wa-input
-@web-awesome Create a custom theme with brand color #ff6b6b
-```
-
-Vous pouvez aussi utiliser les outils en mode agent ou les référencer explicitement avec `#tool-name`.
-
-### Gestion des serveurs MCP
-
-- **Lister les serveurs :** `Cmd/Ctrl + Shift + P` → "MCP: List Servers"
-- **Redémarrer un serveur :** Sélectionnez le serveur dans la liste et choisissez "Restart"
-- **Voir les logs :** Sélectionnez "Show Output" pour diagnostiquer les problèmes
-- **Remettre à zéro le cache :** "MCP: Reset Cached Tools" si les outils ne s'affichent pas
-
-### Dépannage
-
-- **Serveur ne démarre pas :** Vérifiez que `npm run build` a été exécuté et que le fichier `dist/index.js` existe
-- **Outils non disponibles :** Utilisez "MCP: Reset Cached Tools" et redémarrez VS Code
-- **Erreur de confiance :** Utilisez "MCP: Reset Trust" pour réinitialiser
-- **Chemin incorrect :** Le `${workspaceFolder}` doit pointer vers la racine de votre projet
-- **Problèmes de connexion HTTP :** Vérifiez que le port 3000 n'est pas utilisé et que le serveur répond sur `http://localhost:3000/sse`
-
-### Endpoints HTTP
-
-Le serveur expose les endpoints suivants :
-- `GET /sse` : Établit une connexion SSE pour recevoir des messages du serveur
-- `POST /message` : Envoie des messages au serveur (nécessite l'en-tête `mcp-session-id`)
-
-### Ressources disponibles
-
-Le serveur expose des ressources MCP pour accéder aux données JSON des composants :
-
-- `wa://components/wa-button` - Données complètes du composant button
-- `wa://components/wa-input` - Données complètes du composant input
-- etc.
-
-### Sécurité
-
-⚠️ **Important :** Les serveurs MCP peuvent exécuter du code arbitraire sur votre machine. Ne configurez que des serveurs provenant de sources fiables.
-
-## Licence
+## License
 
 MIT

@@ -1,6 +1,6 @@
-import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { CallToolRequestSchema, ListResourcesRequestSchema, ListToolsRequestSchema, ReadResourceRequestSchema, CallToolRequest, ReadResourceRequest } from '@modelcontextprotocol/sdk/types.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import { CallToolRequest, CallToolRequestSchema, ListResourcesRequestSchema, ListToolsRequestSchema, ReadResourceRequest, ReadResourceRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import express, { Request, Response } from 'express';
 import { components } from './data/components.js';
 import { utilities } from './data/utilities.js';
@@ -155,8 +155,9 @@ async function main() {
     await transport.handlePostMessage(req, res);
   });
 
-  app.listen(3000, () => {
-    console.error('Web Awesome MCP Server listening on port 3000');
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.error(`Web Awesome MCP Server listening on port ${port}`);
   });
 }
 
