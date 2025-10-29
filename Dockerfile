@@ -1,15 +1,33 @@
-FROM node:18-alpine
+FROM node:lts-alpine AS builder
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install all dependencies (including dev dependencies for building)
+RUN npm ci
+
+# Copy source code
+COPY src/ ./src/
+COPY tsconfig.json ./
+
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM node:lts-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
 RUN npm ci --only=production && npm cache clean --force
 
-# Copy built application
-COPY dist/ ./dist/
+# Copy built application from builder stage
+COPY --from=builder /app/dist/ ./dist/
 
 # Expose port
 EXPOSE 3000
