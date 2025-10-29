@@ -111,36 +111,41 @@ async function main() {
 
   // SSE endpoint for establishing connections
   app.get('/sse', async (req: Request, res: Response) => {
-    console.log('Got new SSE connection');
-    const transport = new SSEServerTransport('/message', res);
-    
-    const server = new Server(
-      {
-        name: 'wa-mcp-server',
-        version: '1.0.0',
-      },
-      {
-        capabilities: {
-          tools: {},
-          resources: {},
+    try {
+      console.log('Got new SSE connection');
+      const transport = new SSEServerTransport('/message', res);
+
+      const server = new Server(
+        {
+          name: 'wa-mcp-server',
+          version: '1.0.0',
         },
-      }
-    );
+        {
+          capabilities: {
+            tools: {},
+            resources: {},
+          },
+        }
+      );
 
-    // Register handlers for this server instance
-    server.setRequestHandler(ListToolsRequestSchema, listToolsHandler);
-    server.setRequestHandler(CallToolRequestSchema, callToolHandler);
-    server.setRequestHandler(ListResourcesRequestSchema, listResourcesHandler);
-    server.setRequestHandler(ReadResourceRequestSchema, readResourceHandler);
+      // Register handlers for this server instance
+      server.setRequestHandler(ListToolsRequestSchema, listToolsHandler);
+      server.setRequestHandler(CallToolRequestSchema, callToolHandler);
+      server.setRequestHandler(ListResourcesRequestSchema, listResourcesHandler);
+      server.setRequestHandler(ReadResourceRequestSchema, readResourceHandler);
 
-    servers.set(transport.sessionId, server);
-    
-    server.onclose = () => {
-      console.log('SSE connection closed');
-      servers.delete(transport.sessionId);
-    };
+      servers.set(transport.sessionId, server);
 
-    await server.connect(transport);
+      server.onclose = () => {
+        console.log('SSE connection closed');
+        servers.delete(transport.sessionId);
+      };
+
+      await server.connect(transport);
+    } catch (error) {
+      console.error('Error in SSE connection:', error);
+      res.status(500).end();
+    }
   });
 
   // POST endpoint for sending messages
