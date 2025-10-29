@@ -103,6 +103,10 @@ async function main() {
   const app = express();
   app.use(express.json());
 
+  app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
+
   const servers = new Map<string, Server>();
 
   // SSE endpoint for establishing connections
