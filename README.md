@@ -62,7 +62,7 @@ Génère du CSS pour personnaliser un thème.
 
 ## Utilisation avec MCP
 
-Ce serveur peut être intégré dans des clients MCP pour fournir des fonctionnalités liées à Web Awesome.
+Ce serveur peut être intégré dans des clients MCP pour fournir des fonctionnalités liées à Web Awesome. Il utilise le transport HTTP/SSE.
 
 ## Intégration avec GitHub Copilot
 
@@ -74,7 +74,7 @@ Ce serveur peut être intégré dans des clients MCP pour fournir des fonctionna
 
 ### Configuration
 
-La méthode recommandée pour ajouter un serveur MCP est de créer un fichier `mcp.json` dans votre workspace.
+La méthode recommandée pour ajouter un serveur MCP HTTP est de créer un fichier `mcp.json` dans votre workspace.
 
 1. **Créer le fichier `mcp.json` à la racine de votre projet :**
    ```json
@@ -82,7 +82,10 @@ La méthode recommandée pour ajouter un serveur MCP est de créer un fichier `m
      "mcpServers": {
        "web-awesome": {
          "command": "node",
-         "args": ["${workspaceFolder}/dist/index.js"]
+         "args": ["${workspaceFolder}/dist/index.js"],
+         "env": {
+           "MCP_TRANSPORT": "http"
+         }
        }
      }
    }
@@ -92,6 +95,8 @@ La méthode recommandée pour ajouter un serveur MCP est de créer un fichier `m
    ```bash
    npm start
    ```
+
+   Le serveur sera disponible sur `http://localhost:3000`
 
 3. **Confirmer la confiance :**
    Lors du premier démarrage, VS Code vous demandera de confirmer que vous faites confiance au serveur MCP. Acceptez pour permettre l'accès aux outils.
@@ -122,6 +127,13 @@ Vous pouvez aussi utiliser les outils en mode agent ou les référencer explicit
 - **Outils non disponibles :** Utilisez "MCP: Reset Cached Tools" et redémarrez VS Code
 - **Erreur de confiance :** Utilisez "MCP: Reset Trust" pour réinitialiser
 - **Chemin incorrect :** Le `${workspaceFolder}` doit pointer vers la racine de votre projet
+- **Problèmes de connexion HTTP :** Vérifiez que le port 3000 n'est pas utilisé et que le serveur répond sur `http://localhost:3000/sse`
+
+### Endpoints HTTP
+
+Le serveur expose les endpoints suivants :
+- `GET /sse` : Établit une connexion SSE pour recevoir des messages du serveur
+- `POST /message` : Envoie des messages au serveur (nécessite l'en-tête `mcp-session-id`)
 
 ### Ressources disponibles
 
