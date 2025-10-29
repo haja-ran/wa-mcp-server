@@ -398,15 +398,59 @@ export function createApp() {
         // For http-first clients, they will POST to this same /sse endpoint with sessionId
         const endpoint = `${proto}://${host}/sse?sessionId=${newSessionId}`;
 
+        // Build dynamic capabilities based on the server's actual tools and resources.
+        // This ensures the handshake reflects the real capabilities available.
+        const toolDefinitions: Record<string, any> = {};
+        // List of tool objects available in this module scope
+        const availableTools = [
+          listComponentsTool,
+          generateComponentCodeTool,
+          getComponentDocsTool,
+          themeCustomizerTool,
+          listUtilitiesTool,
+          getUtilityDocsTool,
+        ].filter(Boolean);
+
+        for (const t of availableTools) {
+          if (t && t.name) {
+            toolDefinitions[t.name] = {
+              name: t.name,
+              description: t.description ?? '',
+              // Send a minimal, safe representation of the input schema if present
+              inputSchema: t.inputSchema ? t.inputSchema : {},
+            };
+          }
+        }
+
+        // Build resource definitions from components and utilities
+        const resourceDefinitions: Record<string, any> = {};
+        for (const c of components || []) {
+          const uri = `wa://components/${c.tagName}`;
+          resourceDefinitions[uri] = {
+            uri,
+            name: `${c.name} Documentation`,
+            description: c.description ?? '',
+            mimeType: 'application/json',
+          };
+        }
+        for (const u of utilities || []) {
+          const uri = `wa://utilities/${u.className}`;
+          resourceDefinitions[uri] = {
+            uri,
+            name: `${u.name} Documentation`,
+            description: u.description ?? '',
+            mimeType: 'application/json',
+          };
+        }
+
         const resultPayload = {
           sessionId: newSessionId,
           endpoint,
-          // Echo back incoming protocolVersion (if provided) to match client initialization.
-          // Fall back to '1' when the client didn't provide one.
+          // Echo negotiated protocol version (or default)
           protocolVersion: handshakeJson?.params?.protocolVersion ?? '1',
           capabilities: {
-            tools: {},
-            resources: {},
+            tools: toolDefinitions,
+            resources: resourceDefinitions,
           },
           serverInfo: {
             name: 'wa-mcp-server',
