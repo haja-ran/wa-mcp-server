@@ -386,6 +386,48 @@ export function createApp() {
         // If imports fail, respond with an error below when trying to use the server.
       }
 
+      // Build dynamic capabilities for handshake-created Server based on available tools and resources
+      const toolDefinitions: Record<string, any> = {};
+      const availableToolsHandshake = [
+        listComponentsTool,
+        generateComponentCodeTool,
+        getComponentDocsTool,
+        themeCustomizerTool,
+        listUtilitiesTool,
+        getUtilityDocsTool,
+      ].filter(Boolean);
+
+      for (const t of availableToolsHandshake) {
+        if (t && t.name) {
+          toolDefinitions[t.name] = {
+            name: t.name,
+            description: t.description ?? '',
+            // expose a minimal safe representation of the input schema
+            inputSchema: t.inputSchema ? t.inputSchema : {},
+          };
+        }
+      }
+
+      const resourceDefinitions: Record<string, any> = {};
+      for (const c of components || []) {
+        const uri = `wa://components/${c.tagName}`;
+        resourceDefinitions[uri] = {
+          uri,
+          name: `${c.name} Documentation`,
+          description: c.description ?? '',
+          mimeType: 'application/json',
+        };
+      }
+      for (const u of utilities || []) {
+        const uri = `wa://utilities/${u.className}`;
+        resourceDefinitions[uri] = {
+          uri,
+          name: `${u.name} Documentation`,
+          description: u.description ?? '',
+          mimeType: 'application/json',
+        };
+      }
+
       const server = new (ServerHandshake ?? (class {
         constructor() { /* noop fallback server used only to avoid crashes during import failure */ }
         setRequestHandler() { /* noop */ }
@@ -396,8 +438,8 @@ export function createApp() {
         },
         {
           capabilities: {
-            tools: {},
-            resources: {},
+            tools: toolDefinitions,
+            resources: resourceDefinitions,
           },
         }
       );
