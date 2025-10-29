@@ -137,7 +137,6 @@ async function main() {
     };
 
     await server.connect(transport);
-    await transport.start();
   });
 
   // POST endpoint for sending messages
