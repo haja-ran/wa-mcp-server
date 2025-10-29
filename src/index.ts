@@ -308,7 +308,9 @@ export function createApp() {
   // Supports two modes:
   // 1) Handshake (no sessionId): client POSTs to /sse without sessionId to obtain a sessionId/endpoint.
   // 2) Message delivery: client POSTs to /sse?sessionId=... to deliver JSON-RPC messages.
-  app.post('/sse', async (req: Request, res: Response) => {
+  // Accept JSON bodies on this route (many clients POST JSON directly).
+  // Use per-route `express.json()` so we don't affect other endpoints which require raw body access.
+  app.post('/sse', express.json(), async (req: Request, res: Response) => {
     console.log('Received POST to /sse');
 
     const sessionId = (req.query.sessionId as string) || '';
@@ -319,142 +321,61 @@ export function createApp() {
     // sessionId + endpoint if an `id` is present. If the handshake is not JSON-RPC
     // (no id), fall back to returning plain JSON.
     if (!sessionId) {
-      // Read raw handshake body (some clients POST a JSON-RPC request here)
-      let handshakeBody: string | undefined;
-      try {
-        const contentTypeHeader = (req.headers['content-type'] as string) || 'application/json';
-        const match = /charset=([^;]+)/i.exec(contentTypeHeader);
-        const encoding = match ? match[1].trim() : 'utf-8';
-        handshakeBody = await getRawBody(req, { encoding });
-      } catch (err: any) {
-        // If no body or can't read it, continue with undefined handshakeBody
-        handshakeBody = undefined;
-      }
+      // Prefer a parsed JSON body from the route-specific middleware if present.
+      // If no parsed body (e.g. client sent an empty body or another content-type), fall back to raw body.
+      let message: any = undefined;
 
-      let handshakeJson: any = undefined;
-      try {
-        if (handshakeBody) {
-          handshakeJson = JSON.parse(String(handshakeBody));
-        }
-      } catch (err) {
-        // Ignore parse errors; we'll treat as non-JSON-RPC handshake
-        handshakeJson = undefined;
-      }
-
-      // create server instance and register handlers (same as SSE path)
-      const newSessionId = randomUUID();
-
-      // Dynamically import SDK server and types for the handshake path so we don't
-      // force top-level ESM imports during module initialization (helps tests).
-      let ServerHandshake: any;
-      let typesHandshake: any;
-      try {
-        const sdkHandshake = await import('@modelcontextprotocol/sdk/server/index.js');
-        typesHandshake = await import('@modelcontextprotocol/sdk/types.js');
-        ServerHandshake = sdkHandshake.Server ?? (sdkHandshake as any).default?.Server ?? sdkHandshake;
-      } catch (e) {
-        console.error('Failed to dynamically import SDK modules for handshake:', e);
-        // If imports fail, respond with an error below when trying to use the server.
-      }
-
-      // Build dynamic capabilities for handshake-created Server based on available tools and resources
-      const toolDefinitions: Record<string, any> = {};
-      const availableToolsHandshake = [
-        listComponentsTool,
-        generateComponentCodeTool,
-        getComponentDocsTool,
-        themeCustomizerTool,
-        listUtilitiesTool,
-        getUtilityDocsTool,
-      ].filter(Boolean);
-
-      for (const t of availableToolsHandshake) {
-        if (t && t.name) {
-          toolDefinitions[t.name] = {
-            name: t.name,
-            description: t.description ?? '',
-            // expose a minimal safe representation of the input schema
-            inputSchema: t.inputSchema ? t.inputSchema : {},
-          };
-        }
-      }
-
-      const resourceDefinitions: Record<string, any> = {};
-      for (const c of components || []) {
-        const uri = `wa://components/${c.tagName}`;
-        resourceDefinitions[uri] = {
-          uri,
-          name: `${c.name} Documentation`,
-          description: c.description ?? '',
-          mimeType: 'application/json',
-        };
-      }
-      for (const u of utilities || []) {
-        const uri = `wa://utilities/${u.className}`;
-        resourceDefinitions[uri] = {
-          uri,
-          name: `${u.name} Documentation`,
-          description: u.description ?? '',
-          mimeType: 'application/json',
-        };
-      }
-
-      const server = new (ServerHandshake ?? (class {
-        constructor() { /* noop fallback server used only to avoid crashes during import failure */ }
-        setRequestHandler() { /* noop */ }
-      }))(
-        {
-          name: 'wa-mcp-server',
-          version: '1.0.0',
-        },
-        {
-          capabilities: {
-            tools: toolDefinitions,
-            resources: resourceDefinitions,
-          },
-        }
-      );
-
-      // Register handlers for this server instance (same handlers we use elsewhere)
-      if (typesHandshake) {
-        server.setRequestHandler(typesHandshake.ListToolsRequestSchema, listToolsHandler);
-        server.setRequestHandler(typesHandshake.CallToolRequestSchema, callToolHandler);
-        server.setRequestHandler(typesHandshake.ListResourcesRequestSchema, listResourcesHandler);
-        server.setRequestHandler(typesHandshake.ReadResourceRequestSchema, readResourceHandler);
+      if (req.body && Object.keys(req.body).length > 0) {
+        // Client already sent a parsed JSON payload (express.json() handled it).
+        message = req.body;
       } else {
-        // Fallback to the previously-bound (possibly dynamic) schemas if available,
-        // or use the handlers directly (best-effort) to avoid breaking http-first flow.
+        // Fall back to reading raw body (some clients/proxies may not have populated req.body).
+        let rawBody: string | undefined;
         try {
-          // If the SDK types were already loaded elsewhere, the following names might be set.
-          // Attempt to use them if present in module scope.
-          // @ts-ignore
-          if (typeof ListToolsRequestSchema !== 'undefined' && ListToolsRequestSchema) {
-            // @ts-ignore
-            server.setRequestHandler(ListToolsRequestSchema, listToolsHandler);
-            // @ts-ignore
-            server.setRequestHandler(CallToolRequestSchema, callToolHandler);
-            // @ts-ignore
-            server.setRequestHandler(ListResourcesRequestSchema, listResourcesHandler);
-            // @ts-ignore
-            server.setRequestHandler(ReadResourceRequestSchema, readResourceHandler);
+          const contentTypeHeader = (req.headers['content-type'] as string) || 'application/json';
+          const match = /charset=([^;]+)/i.exec(contentTypeHeader);
+          const encoding = match ? match[1].trim() : 'utf-8';
+          rawBody = await getRawBody(req, { encoding });
+        } catch {
+          rawBody = undefined;
+        }
+
+        try {
+          if (rawBody) {
+            message = JSON.parse(String(rawBody));
           }
-        } catch (_e) {
-          // If all else fails, continue without registering typed handlers.
+        } catch {
+          message = undefined;
         }
       }
 
-      // Store server so subsequent POSTs with sessionId are routed to it
-      servers.set(newSessionId, server);
+      // If this is a JSON-RPC `initialize` request, perform the handshake flow.
+      // Otherwise, treat this as a direct JSON-RPC call (tools/list, tools/call, resources/*)
+      // and dispatch immediately without creating a new session endpoint.
+      const method = message?.method;
 
-      // Construct an absolute endpoint to return (helps clients behind proxies)
-      try {
-        const proto = (req.headers['x-forwarded-proto'] as string) || (req.protocol as string) || 'http';
-        const host = req.get('host') || (req.headers['host'] as string) || `localhost:${process.env.PORT || 3000}`;
-        // For http-first clients, they will POST to this same /sse endpoint with sessionId
-        const endpoint = `${proto}://${host}/sse?sessionId=${newSessionId}`;
+      if (method === 'initialize') {
+        // Proceed with handshake: create server instance and return session + capabilities.
 
-        // Build capabilities for handshake result using the centralized helper.
-        const availableToolsForHandshake = [
+        // create server instance and register handlers (same as SSE path)
+        const newSessionId = randomUUID();
+
+        // Dynamically import SDK server and types for the handshake path so we don't
+        // force top-level ESM imports during module initialization (helps tests).
+        let ServerHandshake: any;
+        let typesHandshake: any;
+        try {
+          const sdkHandshake = await import('@modelcontextprotocol/sdk/server/index.js');
+          typesHandshake = await import('@modelcontextprotocol/sdk/types.js');
+          ServerHandshake = sdkHandshake.Server ?? (sdkHandshake as any).default?.Server ?? sdkHandshake;
+        } catch (e) {
+          console.error('Failed to dynamically import SDK modules for handshake:', e);
+          // If imports fail, respond with an error below when trying to use the server.
+        }
+
+        // Build dynamic capabilities for handshake-created Server based on available tools and resources
+        const toolDefinitions: Record<string, any> = {};
+        const availableToolsHandshake = [
           listComponentsTool,
           generateComponentCodeTool,
           getComponentDocsTool,
@@ -462,39 +383,184 @@ export function createApp() {
           listUtilitiesTool,
           getUtilityDocsTool,
         ].filter(Boolean);
-        const capabilities = buildCapabilities(availableToolsForHandshake, components, utilities);
 
-        const resultPayload = {
-          sessionId: newSessionId,
-          endpoint,
-          // Echo negotiated protocol version (or default)
-          protocolVersion: handshakeJson?.params?.protocolVersion ?? '1',
-          // Use the unified capabilities object built above
-          capabilities: capabilities,
-          serverInfo: {
+        for (const t of availableToolsHandshake) {
+          if (t && t.name) {
+            toolDefinitions[t.name] = {
+              name: t.name,
+              description: t.description ?? '',
+              // expose a minimal safe representation of the input schema
+              inputSchema: t.inputSchema ? t.inputSchema : {},
+            };
+          }
+        }
+
+        const resourceDefinitions: Record<string, any> = {};
+        for (const c of components || []) {
+          const uri = `wa://components/${c.tagName}`;
+          resourceDefinitions[uri] = {
+            uri,
+            name: `${c.name} Documentation`,
+            description: c.description ?? '',
+            mimeType: 'application/json',
+          };
+        }
+        for (const u of utilities || []) {
+          const uri = `wa://utilities/${u.className}`;
+          resourceDefinitions[uri] = {
+            uri,
+            name: `${u.name} Documentation`,
+            description: u.description ?? '',
+            mimeType: 'application/json',
+          };
+        }
+
+        const server = new (ServerHandshake ?? (class {
+          constructor() { /* noop fallback server used only to avoid crashes during import failure */ }
+          setRequestHandler() { /* noop */ }
+        }))(
+          {
             name: 'wa-mcp-server',
             version: '1.0.0',
           },
-        };
+          {
+            capabilities: {
+              tools: toolDefinitions,
+              resources: resourceDefinitions,
+            },
+          }
+        );
 
-        // If the client sent a JSON-RPC request (has an id), reply with JSON-RPC 2.0
-        const reqId = handshakeJson?.id;
-        if (reqId !== undefined) {
-          const rpcResp = {
-            jsonrpc: '2.0',
-            id: reqId,
-            result: resultPayload,
-          };
-          res.status(200).json(rpcResp);
-          return;
+        // Register handlers for this server instance (same handlers we use elsewhere)
+        if (typesHandshake) {
+          server.setRequestHandler(typesHandshake.ListToolsRequestSchema, listToolsHandler);
+          server.setRequestHandler(typesHandshake.CallToolRequestSchema, callToolHandler);
+          server.setRequestHandler(typesHandshake.ListResourcesRequestSchema, listResourcesHandler);
+          server.setRequestHandler(typesHandshake.ReadResourceRequestSchema, readResourceHandler);
+        } else {
+          // Fallback to the previously-bound (possibly dynamic) schemas if available,
+          // or use the handlers directly (best-effort) to avoid breaking http-first flow.
+          try {
+            // If the SDK types were already loaded elsewhere, the following names might be set.
+            // Attempt to use them if present in module scope.
+            // @ts-ignore
+            if (typeof ListToolsRequestSchema !== 'undefined' && ListToolsRequestSchema) {
+              // @ts-ignore
+              server.setRequestHandler(ListToolsRequestSchema, listToolsHandler);
+              // @ts-ignore
+              server.setRequestHandler(CallToolRequestSchema, callToolHandler);
+              // @ts-ignore
+              server.setRequestHandler(ListResourcesRequestSchema, listResourcesHandler);
+              // @ts-ignore
+              server.setRequestHandler(ReadResourceRequestSchema, readResourceHandler);
+            }
+          } catch (_e) {
+            // If all else fails, continue without registering typed handlers.
+          }
         }
 
-        // Fallback plain JSON response (if the client wasn't speaking JSON-RPC)
-        res.status(200).json(resultPayload);
-        return;
-      } catch (e) {
-        console.error('Failed to create handshake response:', e);
-        res.status(500).send('Handshake failed');
+        // Store server so subsequent POSTs with sessionId are routed to it
+        servers.set(newSessionId, server);
+
+        // Construct an absolute endpoint to return (helps clients behind proxies)
+        try {
+          const proto = (req.headers['x-forwarded-proto'] as string) || (req.protocol as string) || 'http';
+          const host = req.get('host') || (req.headers['host'] as string) || `localhost:${process.env.PORT || 3000}`;
+          // For http-first clients, they will POST to this same /sse endpoint with sessionId
+          const endpoint = `${proto}://${host}/sse?sessionId=${newSessionId}`;
+
+          const resultPayload = {
+            sessionId: newSessionId,
+            endpoint,
+            // Echo negotiated protocol version (or default)
+            protocolVersion: message?.params?.protocolVersion ?? '1',
+            capabilities: {
+              tools: toolDefinitions,
+              resources: resourceDefinitions,
+            },
+            serverInfo: {
+              name: 'wa-mcp-server',
+              version: '1.0.0',
+            },
+          };
+
+          // If the client sent a JSON-RPC request (has an id), reply with JSON-RPC 2.0
+          const reqId = message?.id;
+          if (reqId !== undefined) {
+            const rpcResp = {
+              jsonrpc: '2.0',
+              id: reqId,
+              result: resultPayload,
+            };
+            res.status(200).json(rpcResp);
+            return;
+          }
+
+          // Fallback plain JSON response (if the client wasn't speaking JSON-RPC)
+          res.status(200).json(resultPayload);
+          return;
+        } catch (e) {
+          console.error('Failed to create handshake response:', e);
+          res.status(500).send('Handshake failed');
+          return;
+        }
+      } else if (method) {
+        // Treat as a direct JSON-RPC call (tools/list, tools/call, resources/*).
+        // Normalize the method and dispatch to handlers directly.
+        const normalizeMethod = (m: string) => {
+          switch (m) {
+            case 'tools/list':
+            case 'listTools':
+              return 'listTools';
+            case 'tools/call':
+            case 'callTool':
+              return 'callTool';
+            case 'resources/list':
+            case 'listResources':
+              return 'listResources';
+            case 'resources/read':
+            case 'readResource':
+              return 'readResource';
+            default:
+              return m;
+          }
+        };
+
+        const canonical = normalizeMethod(method);
+        try {
+          let result: any;
+          if (canonical === 'listTools') {
+            result = await listToolsHandler();
+          } else if (canonical === 'callTool') {
+            const callParams = message?.params ?? {};
+            result = await callToolHandler({ params: callParams } as any);
+          } else if (canonical === 'listResources') {
+            result = await listResourcesHandler();
+          } else if (canonical === 'readResource') {
+            result = await readResourceHandler({ params: message?.params } as any);
+          } else {
+            throw new Error(`Unknown method: ${method}`);
+          }
+
+          // If caller included an id, respond with JSON-RPC envelope; otherwise return raw result for compatibility
+          if (message?.id !== undefined) {
+            res.status(200).json({ jsonrpc: '2.0', id: message.id, result });
+          } else {
+            res.status(200).json(result);
+          }
+          return;
+        } catch (err: any) {
+          console.error('Error handling direct JSON-RPC call:', err);
+          if (message?.id !== undefined) {
+            res.status(500).json({ jsonrpc: '2.0', id: message.id, error: { message: String(err?.message ?? err) } });
+          } else {
+            res.status(500).json({ error: String(err?.message ?? err) });
+          }
+          return;
+        }
+      } else {
+        // No body and no session -> nothing to do
+        res.status(400).send('Missing sessionId or valid JSON-RPC body');
         return;
       }
     }
@@ -569,8 +635,11 @@ export function createApp() {
           result,
         });
       } else {
-        // No id => notification; accept with no body
-        res.status(202).end('Accepted');
+        // No id => compatibility mode for clients like the inspector:
+        // Some clients send a request without an `id` and expect the result
+        // directly rather than treating it as a fire-and-forget notification.
+        // Return the handler result directly to maximize compatibility.
+        res.status(200).json(result);
       }
     } catch (err: any) {
       console.error('Error handling JSON-RPC message:', err);
