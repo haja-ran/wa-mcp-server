@@ -227,6 +227,48 @@ export function createApp() {
         console.error('Failed to send absolute endpoint / prime SSE stream:', e);
       }
 
+      // Build dynamic capabilities for Server based on available tools and resources
+      const toolDefinitions: Record<string, any> = {};
+      const availableTools = [
+        listComponentsTool,
+        generateComponentCodeTool,
+        getComponentDocsTool,
+        themeCustomizerTool,
+        listUtilitiesTool,
+        getUtilityDocsTool,
+      ].filter(Boolean);
+
+      for (const t of availableTools) {
+        if (t && t.name) {
+          toolDefinitions[t.name] = {
+            name: t.name,
+            description: t.description ?? '',
+            // include a minimal safe representation of the input schema if present
+            inputSchema: t.inputSchema ? t.inputSchema : {},
+          };
+        }
+      }
+
+      const resourceDefinitions: Record<string, any> = {};
+      for (const c of components || []) {
+        const uri = `wa://components/${c.tagName}`;
+        resourceDefinitions[uri] = {
+          uri,
+          name: `${c.name} Documentation`,
+          description: c.description ?? '',
+          mimeType: 'application/json',
+        };
+      }
+      for (const u of utilities || []) {
+        const uri = `wa://utilities/${u.className}`;
+        resourceDefinitions[uri] = {
+          uri,
+          name: `${u.name} Documentation`,
+          description: u.description ?? '',
+          mimeType: 'application/json',
+        };
+      }
+
       const server = new Server(
         {
           name: 'wa-mcp-server',
@@ -234,8 +276,8 @@ export function createApp() {
         },
         {
           capabilities: {
-            tools: {},
-            resources: {},
+            tools: toolDefinitions,
+            resources: resourceDefinitions,
           },
         }
       );
