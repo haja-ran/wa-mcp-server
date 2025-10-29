@@ -11,6 +11,9 @@ import { listComponentsTool } from './tools/listComponents.js';
 import { listUtilitiesTool } from './tools/listUtilities.js';
 import { themeCustomizerTool } from './tools/themeCustomizer.js';
 
+const startTime = Date.now();
+let ready = false;
+
 // Global handlers (will be registered per server instance)
 const listToolsHandler = async () => {
   return {
@@ -103,16 +106,32 @@ async function main() {
   const app = express();
   app.use(express.json());
 
-  app.get('/health', (req, res) => {
-    res.status(200).send('OK');
-  });
-
   const servers = new Map<string, Server>();
+
+  // Health endpoint (readiness + liveness)
+  app.get('/health', (req, res) => {
+    res.status(ready ? 200 : 503).json({
+      status: ready ? 'ok' : 'starting',
+      ready,
+      uptimeMs: Date.now() - startTime,
+      connections: servers.size,
+    });
+  });
 
   // SSE endpoint for establishing connections
   app.get('/sse', async (req: Request, res: Response) => {
     try {
-      console.log('Got new SSE connection');
+      const accept = (req.headers['accept'] || '') as string;
+      if (!accept.includes('text/event-stream')) {
+        res.status(406).send('Not Acceptable: missing text/event-stream in Accept header');
+        return;
+      }
+
+      console.log('Got new SSE connection', {
+        ip: req.ip,
+        ua: req.headers['user-agent'],
+      });
+
       const transport = new SSEServerTransport('/message', res);
 
       const server = new Server(
@@ -136,15 +155,31 @@ async function main() {
 
       servers.set(transport.sessionId, server);
 
+      // Keepalive ping (SSE comment lines every 25s)
+      const pingInterval = setInterval(() => {
+        try {
+          (transport as any)._sseResponse?.write(`: ping ${Date.now()}\n\n`);
+        } catch (e) {
+          console.error('Ping write failed', e);
+        }
+      }, 25000);
+
       server.onclose = () => {
         console.log('SSE connection closed');
+        clearInterval(pingInterval);
         servers.delete(transport.sessionId);
+      };
+
+      transport.onerror = (err: any) => {
+        console.error('Transport error', err);
       };
 
       await server.connect(transport);
     } catch (error) {
       console.error('Error in SSE connection:', error);
-      res.status(500).end();
+      if (!res.headersSent) {
+        res.status(500).end();
+      }
     }
   });
 
@@ -153,7 +188,7 @@ async function main() {
     console.log('Received message');
     const sessionId = req.query.sessionId as string;
     const server = servers.get(sessionId);
-    
+
     if (!server) {
       res.status(404).send('Session not found');
       return;
@@ -165,6 +200,7 @@ async function main() {
 
   const port = process.env.PORT || 3000;
   app.listen(port, () => {
+    ready = true;
     console.error(`Web Awesome MCP Server listening on port ${port}`);
   });
 }
