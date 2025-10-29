@@ -539,6 +539,19 @@ export function createApp() {
           } else if (canonical === 'readResource') {
             result = await readResourceHandler({ params: message?.params } as any);
           } else {
+            // Treat notification methods (notifications/*) as a no-op for compatibility.
+            // Some clients send "notifications/initialized" or similar fire-and-forget messages.
+            // Respond with a successful, empty result so HTTP-first clients don't treat this as an error.
+            if (typeof method === 'string' && /^notifications[\/.]/i.test(method)) {
+              if (message?.id !== undefined) {
+                // If the caller surprisingly included an id, reply with a JSON-RPC 2.0 response.
+                res.status(200).json({ jsonrpc: '2.0', id: message.id, result: {} });
+              } else {
+                // Normal notification (no id) — return a simple success payload to be permissive.
+                res.status(200).json({});
+              }
+              return;
+            }
             throw new Error(`Unknown method: ${method}`);
           }
 
@@ -624,6 +637,17 @@ export function createApp() {
       } else if (method === 'readResource' || method === 'resources/read') {
         result = await readResourceHandler({ params } as any);
       } else {
+        // Handle notifications (fire-and-forget) gracefully instead of throwing.
+        if (typeof method === 'string' && /^notifications[\/.]/i.test(method)) {
+          if (id !== undefined) {
+            // If an id was provided (unexpected for a notification), acknowledge with JSON-RPC envelope.
+            res.status(200).json({ jsonrpc: '2.0', id, result: {} });
+          } else {
+            // Typical notification (no id) — respond with an empty object for compatibility.
+            res.status(200).json({});
+          }
+          return;
+        }
         throw new Error(`Unknown method: ${method}`);
       }
 
