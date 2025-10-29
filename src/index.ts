@@ -21,6 +21,8 @@ import { getUtilityDocsTool } from './tools/getUtilityDocs.js';
 import { listComponentsTool } from './tools/listComponents.js';
 import { listUtilitiesTool } from './tools/listUtilities.js';
 import { themeCustomizerTool } from './tools/themeCustomizer.js';
+// helper to build dynamic capabilities payloads (tools + resources)
+import { buildCapabilities, buildHandshakeResult } from './lib/capabilities.js';
 
 const startTime = Date.now();
 let ready = false;
@@ -228,7 +230,6 @@ export function createApp() {
       }
 
       // Build dynamic capabilities for Server based on available tools and resources
-      const toolDefinitions: Record<string, any> = {};
       const availableTools = [
         listComponentsTool,
         generateComponentCodeTool,
@@ -238,36 +239,8 @@ export function createApp() {
         getUtilityDocsTool,
       ].filter(Boolean);
 
-      for (const t of availableTools) {
-        if (t && t.name) {
-          toolDefinitions[t.name] = {
-            name: t.name,
-            description: t.description ?? '',
-            // include a minimal safe representation of the input schema if present
-            inputSchema: t.inputSchema ? t.inputSchema : {},
-          };
-        }
-      }
-
-      const resourceDefinitions: Record<string, any> = {};
-      for (const c of components || []) {
-        const uri = `wa://components/${c.tagName}`;
-        resourceDefinitions[uri] = {
-          uri,
-          name: `${c.name} Documentation`,
-          description: c.description ?? '',
-          mimeType: 'application/json',
-        };
-      }
-      for (const u of utilities || []) {
-        const uri = `wa://utilities/${u.className}`;
-        resourceDefinitions[uri] = {
-          uri,
-          name: `${u.name} Documentation`,
-          description: u.description ?? '',
-          mimeType: 'application/json',
-        };
-      }
+      // Use shared capability builder for a single, testable implementation
+      const capabilities = buildCapabilities(availableTools, components, utilities);
 
       const server = new Server(
         {
@@ -275,10 +248,8 @@ export function createApp() {
           version: '1.0.0',
         },
         {
-          capabilities: {
-            tools: toolDefinitions,
-            resources: resourceDefinitions,
-          },
+          // pass the unified capabilities object built above
+          capabilities: capabilities,
         }
       );
 
@@ -482,11 +453,8 @@ export function createApp() {
         // For http-first clients, they will POST to this same /sse endpoint with sessionId
         const endpoint = `${proto}://${host}/sse?sessionId=${newSessionId}`;
 
-        // Build dynamic capabilities based on the server's actual tools and resources.
-        // This ensures the handshake reflects the real capabilities available.
-        const toolDefinitions: Record<string, any> = {};
-        // List of tool objects available in this module scope
-        const availableTools = [
+        // Build capabilities for handshake result using the centralized helper.
+        const availableToolsForHandshake = [
           listComponentsTool,
           generateComponentCodeTool,
           getComponentDocsTool,
@@ -494,48 +462,15 @@ export function createApp() {
           listUtilitiesTool,
           getUtilityDocsTool,
         ].filter(Boolean);
-
-        for (const t of availableTools) {
-          if (t && t.name) {
-            toolDefinitions[t.name] = {
-              name: t.name,
-              description: t.description ?? '',
-              // Send a minimal, safe representation of the input schema if present
-              inputSchema: t.inputSchema ? t.inputSchema : {},
-            };
-          }
-        }
-
-        // Build resource definitions from components and utilities
-        const resourceDefinitions: Record<string, any> = {};
-        for (const c of components || []) {
-          const uri = `wa://components/${c.tagName}`;
-          resourceDefinitions[uri] = {
-            uri,
-            name: `${c.name} Documentation`,
-            description: c.description ?? '',
-            mimeType: 'application/json',
-          };
-        }
-        for (const u of utilities || []) {
-          const uri = `wa://utilities/${u.className}`;
-          resourceDefinitions[uri] = {
-            uri,
-            name: `${u.name} Documentation`,
-            description: u.description ?? '',
-            mimeType: 'application/json',
-          };
-        }
+        const capabilities = buildCapabilities(availableToolsForHandshake, components, utilities);
 
         const resultPayload = {
           sessionId: newSessionId,
           endpoint,
           // Echo negotiated protocol version (or default)
           protocolVersion: handshakeJson?.params?.protocolVersion ?? '1',
-          capabilities: {
-            tools: toolDefinitions,
-            resources: resourceDefinitions,
-          },
+          // Use the unified capabilities object built above
+          capabilities: capabilities,
           serverInfo: {
             name: 'wa-mcp-server',
             version: '1.0.0',
@@ -610,15 +545,17 @@ export function createApp() {
 
     try {
       let result: any;
-      // Map JSON-RPC method names to our handler functions
-      if (method === 'listTools') {
+      // Map JSON-RPC method names to our handler functions.
+      // Accept both legacy names (e.g. 'listTools') and canonical MCP names (e.g. 'tools/list').
+      if (method === 'listTools' || method === 'tools/list') {
         result = await listToolsHandler();
-      } else if (method === 'callTool') {
-        // Wrap into the expected shape for callToolHandler
-        result = await callToolHandler({ params } as any);
-      } else if (method === 'listResources') {
+      } else if (method === 'callTool' || method === 'tools/call') {
+        // Normalize params shape for the call handler
+        const callParams = params ?? {};
+        result = await callToolHandler({ params: callParams } as any);
+      } else if (method === 'listResources' || method === 'resources/list') {
         result = await listResourcesHandler();
-      } else if (method === 'readResource') {
+      } else if (method === 'readResource' || method === 'resources/read') {
         result = await readResourceHandler({ params } as any);
       } else {
         throw new Error(`Unknown method: ${method}`);
