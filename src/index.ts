@@ -17,6 +17,7 @@ import { components } from './data/components.js';
 import { utilities } from './data/utilities.js';
 import { generateComponentCodeTool } from './tools/generateComponentCode.js';
 import { getComponentDocsTool } from './tools/getComponentDocs.js';
+import { getUsageGuideTool } from './tools/getUsageGuide.js';
 import { getUtilityDocsTool } from './tools/getUtilityDocs.js';
 import { listComponentsTool } from './tools/listComponents.js';
 import { listUtilitiesTool } from './tools/listUtilities.js';
@@ -34,6 +35,7 @@ const listToolsHandler = async () => {
       listComponentsTool,
       generateComponentCodeTool,
       getComponentDocsTool,
+      getUsageGuideTool,
       themeCustomizerTool,
       listUtilitiesTool,
       getUtilityDocsTool,
@@ -48,6 +50,7 @@ const callToolHandler = async (request: any) => {
     listComponents: async (args) => await (listComponentsTool as any).handler(args),
     generateComponentCode: async (args) => await (generateComponentCodeTool as any).handler(args),
     getComponentDocs: async (args) => await (getComponentDocsTool as any).handler(args),
+    getUsageGuide: async (args) => await (getUsageGuideTool as any).handler(args),
     themeCustomizer: async (args) => await (themeCustomizerTool as any).handler(args),
     listUtilities: async (args) => await (listUtilitiesTool as any).handler(args),
     getUtilityDocs: async (args) => await (getUtilityDocsTool as any).handler(args),
@@ -234,6 +237,7 @@ export function createApp() {
         listComponentsTool,
         generateComponentCodeTool,
         getComponentDocsTool,
+        getUsageGuideTool,
         themeCustomizerTool,
         listUtilitiesTool,
         getUtilityDocsTool,
@@ -379,6 +383,7 @@ export function createApp() {
           listComponentsTool,
           generateComponentCodeTool,
           getComponentDocsTool,
+          getUsageGuideTool,
           themeCustomizerTool,
           listUtilitiesTool,
           getUtilityDocsTool,

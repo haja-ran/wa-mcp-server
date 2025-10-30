@@ -1,4 +1,4 @@
-import { Tool } from '@modelcontextprotocol/sdk/types.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { utilities } from '../data/utilities.js';
 
 export const listUtilitiesTool: Tool = {

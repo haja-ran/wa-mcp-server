@@ -9,7 +9,6 @@ export const themeCustomizerTool: Tool = {
       variables: {
         type: 'object',
         description: 'Variables CSS à personnaliser (ex: { "--wa-color-brand": "#ff0000" }).',
-        required: true,
       },
     },
     required: ['variables'],

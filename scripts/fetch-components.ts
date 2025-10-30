@@ -142,19 +142,71 @@ ${interfaceStr}`;
 }
 
 function parseProperties(tsContent: string): ComponentInfo['properties'] {
-  // Chercher dans les commentaires JSDoc @property
-  const propertyRegex = /\*\s*@property\s*\{([^}]+)\}\s*\[?(\w+)\]?\s*-\s*(.+)/g;
+  const lines = tsContent.split('\n');
   const properties: ComponentInfo['properties'] = [];
-  let match;
-  while ((match = propertyRegex.exec(tsContent)) !== null) {
-    const type = match[1];
-    const name = match[2];
-    const description = match[3];
-    properties.push({
-      name,
-      type,
-      description,
-    });
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith('@property')) {
+      // Find the comment above
+      let commentLines: string[] = [];
+      let j = i - 1;
+      while (j >= 0) {
+        const prevLine = lines[j].trim();
+        if (prevLine.endsWith('*/')) {
+          commentLines.unshift(lines[j]);
+          j--;
+          while (j >= 0) {
+            const commentLine = lines[j].trim();
+            if (commentLine.startsWith('/**')) {
+              commentLines.unshift(lines[j]);
+              j--;
+              break;
+            } else if (commentLine.startsWith('*')) {
+              commentLines.unshift(lines[j]);
+              j--;
+            } else {
+              break;
+            }
+          }
+          break;
+        }
+        if (prevLine.startsWith('@')) break; // stop if another decorator
+        j--;
+      }
+      // Extract description
+      const description = commentLines
+        .map(l => l.replace(/^\s*\*\s*/, '').replace(/^\s*\/\*\*?\s*/, '').replace(/\s*\*\/\s*$/, '').trim())
+        .filter(l => l)
+        .join(' ')
+        .replace(/\s+/g, ' ');
+      // Parse the @property line
+      const propMatch = line.match(/@property\(\s*\{([^}]*)\}\s*\)\s+(\w+)(?::\s*([^=]+?))?(?:\s*=\s*(.+?))?\s*;/);
+      if (propMatch) {
+        const options: string = propMatch[1] as string;
+        const name: string = propMatch[2] as string;
+        const typeFromColon: string | null = propMatch[3] ? (propMatch[3] as string).trim() : null;
+        const rawDefault: string | undefined = propMatch[4];
+        let defaultVal: string | undefined = undefined;
+        if (rawDefault) {
+          defaultVal = (rawDefault as string).trim().replace(/;$/, '');
+        }
+        let type: string = 'string';
+        if (typeFromColon) {
+          type = typeFromColon;
+        } else {
+          if (options.includes('type: Boolean')) type = 'boolean';
+          else if (options.includes('type: String')) type = 'string';
+          else if (options.includes('type: Number')) type = 'number';
+          else type = 'string'; // fallback
+        }
+        properties.push({
+          name,
+          type,
+          description,
+          default: defaultVal
+        });
+      }
+    }
   }
   return properties;
 }

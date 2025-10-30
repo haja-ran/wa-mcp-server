@@ -1,4 +1,4 @@
-import { Tool } from '@modelcontextprotocol/sdk/types.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { utilities } from '../data/utilities.js';
 
 export const getUtilityDocsTool: Tool = {
@@ -9,8 +9,7 @@ export const getUtilityDocsTool: Tool = {
     properties: {
       className: {
         type: 'string',
-        description: 'Le nom de la classe de l\'utilitaire (ex: wa-stack).',
-        required: true,
+        description: 'Le nom de la classe de l\'utilitaire (ex: wa-stack).'
       },
     },
     required: ['className'],

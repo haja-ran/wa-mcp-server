@@ -1,4 +1,4 @@
-import { Tool } from '@modelcontextprotocol/sdk/types.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { components } from '../data/components.js';
 
 export const generateComponentCodeTool: Tool = {
@@ -10,7 +10,6 @@ export const generateComponentCodeTool: Tool = {
       tagName: {
         type: 'string',
         description: 'Le nom du tag du composant (ex: wa-button).',
-        required: true,
       },
       properties: {
         type: 'object',

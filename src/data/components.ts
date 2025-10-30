@@ -30,7 +30,13 @@ export const components: ComponentInfo[] = [
     name: 'Animated Image',
     description: 'A component for displaying animated GIFs and WEBPs that play and pause on interaction.',
     category: 'Imagery',
-    properties: [],
+    properties: [
+        {
+            "name": "play",
+            "type": "boolean",
+            "description": "Plays the animation. When this attribute is remove, the animation will pause."
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -63,7 +69,50 @@ export const components: ComponentInfo[] = [
     name: 'Animation',
     description: 'Animate elements declaratively with nearly 100 baked-in presets, or roll your own with custom keyframes.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "play",
+            "type": "boolean",
+            "description": "Plays the animation. When omitted, the animation will be paused. This attribute will be automatically removed when the animation finishes or gets canceled. /",
+            "default": "false"
+        },
+        {
+            "name": "delay",
+            "type": "number",
+            "description": "The number of milliseconds to delay the start of the animation.",
+            "default": "0"
+        },
+        {
+            "name": "duration",
+            "type": "number",
+            "description": "The number of milliseconds each iteration of the animation takes to complete.",
+            "default": "1000"
+        },
+        {
+            "name": "endDelay",
+            "type": "number",
+            "description": "The number of milliseconds to delay after the active period of an animation sequence.",
+            "default": "0"
+        },
+        {
+            "name": "iterations",
+            "type": "number",
+            "description": "The number of iterations to run before the animation completes. Defaults to `Infinity`, which loops.",
+            "default": "Infinity"
+        },
+        {
+            "name": "iterationStart",
+            "type": "number",
+            "description": "The offset at which to start the animation, usually between 0 (start) and 1 (end).",
+            "default": "0"
+        },
+        {
+            "name": "playbackRate",
+            "type": "number",
+            "description": "Sets the animation's playback rate. The default is `1`, which plays the animation at a normal speed. Setting this to `2`, for example, will double the animation's speed. A negative value can be used to reverse the animation. This value can be changed without causing the animation to restart. /",
+            "default": "1"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -86,7 +135,14 @@ export const components: ComponentInfo[] = [
     name: 'Avatar',
     description: 'Avatars are used to represent a person or object.',
     category: 'Imagery',
-    properties: [],
+    properties: [
+        {
+            "name": "shape",
+            "type": "'circle' | 'square' | 'rounded'",
+            "description": "The shape of the avatar.",
+            "default": "'circle'"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -119,7 +175,32 @@ export const components: ComponentInfo[] = [
     name: 'Badge',
     description: 'Badges are used to draw attention and display statuses or counts.',
     category: 'Feedback & Status',
-    properties: [],
+    properties: [
+        {
+            "name": "variant",
+            "type": "'brand' | 'neutral' | 'success' | 'warning' | 'danger'",
+            "description": "The badge's theme variant. Defaults to `brand` if not within another element with a variant.",
+            "default": "'brand'"
+        },
+        {
+            "name": "appearance",
+            "type": "'accent' | 'filled' | 'outlined' | 'filled-outlined'",
+            "description": "The badge's visual appearance.",
+            "default": "'accent'"
+        },
+        {
+            "name": "pill",
+            "type": "boolean",
+            "description": "Draws a pill-style badge with rounded edges.",
+            "default": "false"
+        },
+        {
+            "name": "attention",
+            "type": "'none' | 'pulse' | 'bounce'",
+            "description": "Adds an animation to draw attention to the badge.",
+            "default": "'none'"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -194,7 +275,14 @@ export const components: ComponentInfo[] = [
     name: 'Button Group',
     description: 'Button groups can be used to group related buttons into sections.',
     category: 'Actions',
-    properties: [],
+    properties: [
+        {
+            "name": "orientation",
+            "type": "'horizontal' | 'vertical'",
+            "description": "The button group's orientation.",
+            "default": "'horizontal'"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -209,7 +297,91 @@ export const components: ComponentInfo[] = [
     name: 'Button',
     description: 'Buttons represent actions that are available to the user.',
     category: 'Actions',
-    properties: [],
+    properties: [
+        {
+            "name": "variant",
+            "type": "'neutral' | 'brand' | 'success' | 'warning' | 'danger'",
+            "description": "The button's theme variant. Defaults to `neutral` if not within another element with a variant.",
+            "default": "'neutral'"
+        },
+        {
+            "name": "appearance",
+            "type": "'accent' | 'filled' | 'outlined' | 'filled-outlined' | 'plain'",
+            "description": "The button's visual appearance.",
+            "default": "'accent'"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The button's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "withCaret",
+            "type": "boolean",
+            "description": "Draws the button with a caret. Used to indicate that the button triggers a dropdown menu or similar behavior.",
+            "default": "false"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the button. Does not apply to link buttons.",
+            "default": "false"
+        },
+        {
+            "name": "loading",
+            "type": "boolean",
+            "description": "Draws the button in a loading state.",
+            "default": "false"
+        },
+        {
+            "name": "pill",
+            "type": "boolean",
+            "description": "Draws a pill-style button with rounded edges.",
+            "default": "false"
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "description": "The name of the button, submitted as a name/value pair with form data, but only when this button is the submitter. This attribute is ignored when `href` is present. /"
+        },
+        {
+            "name": "value",
+            "type": "string",
+            "description": "The value of the button, submitted as a pair with the button's name as part of the form data, but only when this button is the submitter. This attribute is ignored when `href` is present. /"
+        },
+        {
+            "name": "href",
+            "type": "string",
+            "description": "When set, the underlying button will be rendered as an `<a>` with this `href` instead of a `<button>`."
+        },
+        {
+            "name": "form",
+            "type": "string | null",
+            "description": "The \"form owner\" to associate the button with. If omitted, the closest containing form will be used instead. The value of this attribute must be an id of a form in the same document or shadow root as the button. /",
+            "default": "null"
+        },
+        {
+            "name": "formAction",
+            "type": "string",
+            "description": "Used to override the form owner's `action` attribute."
+        },
+        {
+            "name": "formMethod",
+            "type": "'post' | 'get'",
+            "description": "Used to override the form owner's `method` attribute."
+        },
+        {
+            "name": "formNoValidate",
+            "type": "boolean",
+            "description": "Used to override the form owner's `novalidate` attribute."
+        },
+        {
+            "name": "formTarget",
+            "type": "'_self' | '_blank' | '_parent' | '_top' | string",
+            "description": "Used to override the form owner's `target` attribute."
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -266,7 +438,25 @@ export const components: ComponentInfo[] = [
     name: 'Callout',
     description: 'Callouts are used to display important messages inline.',
     category: 'Feedback & Status',
-    properties: [],
+    properties: [
+        {
+            "name": "variant",
+            "type": "'brand' | 'neutral' | 'success' | 'warning' | 'danger'",
+            "description": "The callout's theme variant. Defaults to `brand` if not within another element with a variant.",
+            "default": "'brand'"
+        },
+        {
+            "name": "appearance",
+            "type": "'accent' | 'filled' | 'outlined' | 'plain' | 'filled-outlined'",
+            "description": "The callout's visual appearance."
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The callout's size.",
+            "default": "'medium'"
+        }
+    ],
     events: [],
     slots: [
         {
@@ -290,7 +480,26 @@ export const components: ComponentInfo[] = [
     name: 'Card',
     description: 'Cards can be used to group related subjects in a container.',
     category: 'Organization',
-    properties: [],
+    properties: [
+        {
+            "name": "withHeader",
+            "type": "boolean",
+            "description": "Renders the card with a header. Only needed for SSR, otherwise is automatically added.",
+            "default": "false"
+        },
+        {
+            "name": "withMedia",
+            "type": "boolean",
+            "description": "Renders the card with an image. Only needed for SSR, otherwise is automatically added.",
+            "default": "false"
+        },
+        {
+            "name": "withFooter",
+            "type": "boolean",
+            "description": "Renders the card with a footer. Only needed for SSR, otherwise is automatically added.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [
         {
@@ -352,7 +561,68 @@ export const components: ComponentInfo[] = [
     name: 'Carousel',
     description: 'Carousels display an arbitrary number of content slides along a horizontal or vertical axis.',
     category: 'Imagery',
-    properties: [],
+    properties: [
+        {
+            "name": "loop",
+            "type": "boolean",
+            "description": "When set, allows the user to navigate the carousel in the same direction indefinitely.",
+            "default": "false"
+        },
+        {
+            "name": "slides",
+            "type": "number",
+            "description": "",
+            "default": "0"
+        },
+        {
+            "name": "currentSlide",
+            "type": "number",
+            "description": "",
+            "default": "0"
+        },
+        {
+            "name": "navigation",
+            "type": "boolean",
+            "description": "When set, show the carousel's navigation.",
+            "default": "false"
+        },
+        {
+            "name": "pagination",
+            "type": "boolean",
+            "description": "When set, show the carousel's pagination indicators.",
+            "default": "false"
+        },
+        {
+            "name": "autoplay",
+            "type": "boolean",
+            "description": "When set, the slides will scroll automatically when the user is not interacting with them.",
+            "default": "false"
+        },
+        {
+            "name": "autoplayInterval",
+            "type": "number",
+            "description": "Specifies the amount of time, in milliseconds, between each automatic scroll.",
+            "default": "3000"
+        },
+        {
+            "name": "slidesPerPage",
+            "type": "number",
+            "description": "Specifies how many slides should be shown at a given time.",
+            "default": "1"
+        },
+        {
+            "name": "slidesPerMove",
+            "type": "number",
+            "description": "Specifies the number of slides the carousel will advance when scrolling, useful when specifying a `slides-per-page` greater than one. It can't be higher than `slides-per-page`. /",
+            "default": "1"
+        },
+        {
+            "name": "mouseDragging",
+            "type": "boolean",
+            "description": "When set, it is possible to scroll through the slides by dragging them with the mouse.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [
         {
@@ -408,7 +678,50 @@ export const components: ComponentInfo[] = [
     name: 'Checkbox',
     description: 'Checkboxes allow the user to toggle an option on or off.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "The name of the checkbox, submitted as a name/value pair with form data.",
+            "default": "''"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The checkbox's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the checkbox.",
+            "default": "false"
+        },
+        {
+            "name": "indeterminate",
+            "type": "boolean",
+            "description": "Draws the checkbox in an indeterminate state. This is usually applied to checkboxes that represents a \"select all/none\" behavior when associated checkboxes have a mix of checked and unchecked states. /",
+            "default": "false"
+        },
+        {
+            "name": "checked",
+            "type": "boolean",
+            "description": "Draws the checkbox in a checked state.",
+            "default": "this.hasAttribute('checked')"
+        },
+        {
+            "name": "form",
+            "type": "string",
+            "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you to place the form control outside of a form and associate it with the form that has this `id`. The form must be in the same document or shadow root for this to work. /",
+            "default": "null"
+        },
+        {
+            "name": "required",
+            "type": "boolean",
+            "description": "Makes the checkbox a required field.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -469,7 +782,86 @@ export const components: ComponentInfo[] = [
     name: 'Color Picker',
     description: 'Color pickers allow the user to select a color.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "defaultValue",
+            "type": "string | null",
+            "description": "The default value of the form control. Primarily used for resetting the form control.",
+            "default": "this.getAttribute('value') || null"
+        },
+        {
+            "name": "withLabel",
+            "type": "boolean",
+            "description": "",
+            "default": "false"
+        },
+        {
+            "name": "withHint",
+            "type": "boolean",
+            "description": "",
+            "default": "false"
+        },
+        {
+            "name": "hint",
+            "type": "string",
+            "description": "The color picker's hint. If you need to display HTML, use the `hint` slot instead. /",
+            "default": "''"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "Determines the size of the color picker's trigger",
+            "default": "'medium'"
+        },
+        {
+            "name": "withoutFormatToggle",
+            "type": "boolean",
+            "description": "Removes the button that lets users toggle between format.",
+            "default": "false"
+        },
+        {
+            "name": "name",
+            "type": "string | null",
+            "description": "The name of the form control, submitted as a name/value pair with form data.",
+            "default": "null"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the color picker.",
+            "default": "false"
+        },
+        {
+            "name": "open",
+            "type": "boolean",
+            "description": "Indicates whether or not the popup is open. You can toggle this attribute to show and hide the popup, or you can use the `show()` and `hide()` methods and this attribute will reflect the popup's open state. /",
+            "default": "false"
+        },
+        {
+            "name": "opacity",
+            "type": "boolean",
+            "description": "Shows the opacity slider. Enabling this will cause the formatted value to be HEXA, RGBA, or HSLA.",
+            "default": "false"
+        },
+        {
+            "name": "uppercase",
+            "type": "boolean",
+            "description": "By default, values are lowercase. With this attribute, values will be uppercase instead.",
+            "default": "false"
+        },
+        {
+            "name": "form",
+            "type": "string",
+            "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you to place the form control outside of a form and associate it with the form that has this `id`. The form must be in the same document or shadow root for this to work. /",
+            "default": "null"
+        },
+        {
+            "name": "required",
+            "type": "boolean",
+            "description": "Makes the color picker a required field.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -614,7 +1006,14 @@ export const components: ComponentInfo[] = [
     name: 'Comparison',
     description: 'Compare visual differences between similar content with a sliding panel.',
     category: 'Imagery',
-    properties: [],
+    properties: [
+        {
+            "name": "position",
+            "type": "number",
+            "description": "The position of the divider as a percentage.",
+            "default": "50"
+        }
+    ],
     events: [
         {
             "name": "change",
@@ -663,7 +1062,44 @@ export const components: ComponentInfo[] = [
     name: 'Copy Button',
     description: 'Copies data to the clipboard when the user clicks the button.',
     category: 'Actions',
-    properties: [],
+    properties: [
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the copy button.",
+            "default": "false"
+        },
+        {
+            "name": "copyLabel",
+            "type": "string",
+            "description": "A custom label to show in the tooltip.",
+            "default": "''"
+        },
+        {
+            "name": "successLabel",
+            "type": "string",
+            "description": "A custom label to show in the tooltip after copying.",
+            "default": "''"
+        },
+        {
+            "name": "errorLabel",
+            "type": "string",
+            "description": "A custom label to show in the tooltip when a copy error occurs.",
+            "default": "''"
+        },
+        {
+            "name": "feedbackDuration",
+            "type": "number",
+            "description": "The length of time to show feedback before restoring the default trigger.",
+            "default": "1000"
+        },
+        {
+            "name": "tooltipPlacement",
+            "type": "'top' | 'right' | 'bottom' | 'left'",
+            "description": "The preferred placement of the tooltip.",
+            "default": "'top'"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -728,7 +1164,37 @@ export const components: ComponentInfo[] = [
     name: 'Details',
     description: 'Details show a brief summary and expand to show additional content.',
     category: 'Organization',
-    properties: [],
+    properties: [
+        {
+            "name": "open",
+            "type": "boolean",
+            "description": "Indicates whether or not the details is open. You can toggle this attribute to show and hide the details, or you can use the `show()` and `hide()` methods and this attribute will reflect the details' open state. /",
+            "default": "false"
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "description": "Groups related details elements. When one opens, others with the same name will close."
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the details so it can't be toggled.",
+            "default": "false"
+        },
+        {
+            "name": "appearance",
+            "type": "'filled' | 'outlined' | 'filled-outlined' | 'plain'",
+            "description": "The element's visual appearance.",
+            "default": "'outlined'"
+        },
+        {
+            "name": "iconPlacement",
+            "type": "'start' | 'end'",
+            "description": "The location of the expand/collapse icon.",
+            "default": "'end'"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -789,7 +1255,32 @@ export const components: ComponentInfo[] = [
     name: 'Dialog',
     description: 'Dialogs, sometimes called "modals", appear above the page and require the user\'s immediate attention.',
     category: 'Organization',
-    properties: [],
+    properties: [
+        {
+            "name": "open",
+            "type": "boolean",
+            "description": "Indicates whether or not the dialog is open. Toggle this attribute to show and hide the dialog.",
+            "default": "false"
+        },
+        {
+            "name": "label",
+            "type": "string",
+            "description": "The dialog's label as displayed in the header. You should always include a relevant label, as it is required for proper accessibility. If you need to display HTML, use the `label` slot instead. /",
+            "default": "''"
+        },
+        {
+            "name": "withoutHeader",
+            "type": "boolean",
+            "description": "Disables the header. This will also remove the default close button.",
+            "default": "false"
+        },
+        {
+            "name": "lightDismiss",
+            "type": "boolean",
+            "description": "When enabled, the dialog will be closed when the user clicks outside of it.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -858,7 +1349,14 @@ export const components: ComponentInfo[] = [
     name: 'Divider',
     description: 'Dividers are used to visually separate or group elements.',
     category: 'Organization',
-    properties: [],
+    properties: [
+        {
+            "name": "orientation",
+            "type": "'horizontal' | 'vertical'",
+            "description": "Sets the divider's orientation.",
+            "default": "'horizontal'"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [],
@@ -868,7 +1366,38 @@ export const components: ComponentInfo[] = [
     name: 'Drawer',
     description: 'Drawers slide in from a container to expose additional options and information.',
     category: 'Organization',
-    properties: [],
+    properties: [
+        {
+            "name": "open",
+            "type": "boolean",
+            "description": "Indicates whether or not the drawer is open. Toggle this attribute to show and hide the drawer.",
+            "default": "false"
+        },
+        {
+            "name": "label",
+            "type": "string",
+            "description": "The drawer's label as displayed in the header. You should always include a relevant label, as it is required for proper accessibility. If you need to display HTML, use the `label` slot instead. /",
+            "default": "''"
+        },
+        {
+            "name": "placement",
+            "type": "'top' | 'end' | 'bottom' | 'start'",
+            "description": "The direction from which the drawer will open.",
+            "default": "'end'"
+        },
+        {
+            "name": "withoutHeader",
+            "type": "boolean",
+            "description": "Disables the header. This will also remove the default close button.",
+            "default": "false"
+        },
+        {
+            "name": "lightDismiss",
+            "type": "boolean",
+            "description": "When enabled, the drawer will be closed when the user clicks outside of it.",
+            "default": "true"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -941,7 +1470,62 @@ export const components: ComponentInfo[] = [
     name: 'Dropdown Item',
     description: 'Description of component.',
     category: 'Actions',
-    properties: [],
+    properties: [
+        {
+            "name": "active",
+            "type": "boolean",
+            "description": "@internal The controller will set this property to true when the item is active.",
+            "default": "false"
+        },
+        {
+            "name": "variant",
+            "type": "'danger' | 'default'",
+            "description": "The type of menu item to render.",
+            "default": "'default'"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "@internal The dropdown item's size. /",
+            "default": "'medium'"
+        },
+        {
+            "name": "checkboxAdjacent",
+            "type": "boolean",
+            "description": "@internal The controller will set this property to true when at least one checkbox exists in the dropdown. This allows non-checkbox items to draw additional space to align properly with checkbox items. /",
+            "default": "false"
+        },
+        {
+            "name": "submenuAdjacent",
+            "type": "boolean",
+            "description": "@internal The controller will set this property to true when at least one item with a submenu exists in the dropdown. This allows non-submenu items to draw additional space to align properly with items that have submenus. /",
+            "default": "false"
+        },
+        {
+            "name": "type",
+            "type": "'normal' | 'checkbox'",
+            "description": "Set to `checkbox` to make the item a checkbox.",
+            "default": "'normal'"
+        },
+        {
+            "name": "checked",
+            "type": "boolean",
+            "description": "Set to true to check the dropdown item. Only valid when `type` is `checkbox`.",
+            "default": "false"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the dropdown item.",
+            "default": "false"
+        },
+        {
+            "name": "submenuOpen",
+            "type": "boolean",
+            "description": "Whether the submenu is currently open.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -998,7 +1582,32 @@ export const components: ComponentInfo[] = [
     name: 'Dropdown',
     description: 'Dropdowns expose additional content that "drops down" in a panel.',
     category: 'Actions',
-    properties: [],
+    properties: [
+        {
+            "name": "open",
+            "type": "boolean",
+            "description": "Opens or closes the dropdown.",
+            "default": "false"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The dropdown's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "distance",
+            "type": "number",
+            "description": "The distance of the dropdown menu from its trigger.",
+            "default": "0"
+        },
+        {
+            "name": "skidding",
+            "type": "number",
+            "description": "The offset of the dropdown menu along its trigger.",
+            "default": "0"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -1043,7 +1652,14 @@ export const components: ComponentInfo[] = [
     name: 'Format Bytes',
     description: 'Formats a number as a human readable bytes value.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "value",
+            "type": "number",
+            "description": "The number to format in bytes.",
+            "default": "0"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [],
@@ -1053,7 +1669,24 @@ export const components: ComponentInfo[] = [
     name: 'Format Date',
     description: 'Formats a date/time using the specified locale and options.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "timeZoneName",
+            "type": "'short' | 'long'",
+            "description": "The format for displaying the time."
+        },
+        {
+            "name": "timeZone",
+            "type": "string",
+            "description": "The time zone to express the time in."
+        },
+        {
+            "name": "hourFormat",
+            "type": "'auto' | '12' | '24'",
+            "description": "The format for displaying the hour.",
+            "default": "'auto'"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [],
@@ -1063,7 +1696,51 @@ export const components: ComponentInfo[] = [
     name: 'Format Number',
     description: 'Formats a number using the specified locale and options.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "value",
+            "type": "number",
+            "description": "The number to format.",
+            "default": "0"
+        },
+        {
+            "name": "withoutGrouping",
+            "type": "boolean",
+            "description": "Turns off grouping separators.",
+            "default": "false"
+        },
+        {
+            "name": "currencyDisplay",
+            "type": "'symbol' | 'narrowSymbol' | 'code' | 'name'",
+            "description": "How to display the currency.",
+            "default": "'symbol'"
+        },
+        {
+            "name": "minimumIntegerDigits",
+            "type": "number",
+            "description": "The minimum number of integer digits to use. Possible values are 1-21."
+        },
+        {
+            "name": "minimumFractionDigits",
+            "type": "number",
+            "description": "The minimum number of fraction digits to use. Possible values are 0-100."
+        },
+        {
+            "name": "maximumFractionDigits",
+            "type": "number",
+            "description": "The maximum number of fraction digits to use. Possible values are 0-100."
+        },
+        {
+            "name": "minimumSignificantDigits",
+            "type": "number",
+            "description": "The minimum number of significant digits to use. Possible values are 1-21."
+        },
+        {
+            "name": "maximumSignificantDigits",
+            "type": "number",
+            "description": "The maximum number of significant digits to use,. Possible values are 1-21."
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [],
@@ -1073,7 +1750,36 @@ export const components: ComponentInfo[] = [
     name: 'Icon',
     description: 'Icons are symbols that can be used to represent various options within an application.',
     category: 'Imagery',
-    properties: [],
+    properties: [
+        {
+            "name": "family",
+            "type": "string",
+            "description": "The family of icons to choose from. For Font Awesome Free, valid options include `classic` and `brands`. For Font Awesome Pro subscribers, valid options include, `classic`, `sharp`, `duotone`, `sharp-duotone`, and `brands`. A valid kit code must be present to show pro icons via CDN. You can set `<html data-fa-kit-code=\"...\">` to provide one. /"
+        },
+        {
+            "name": "variant",
+            "type": "string",
+            "description": "The name of the icon's variant. For Font Awesome, valid options include `thin`, `light`, `regular`, and `solid` for the `classic` and `sharp` families. Some variants require a Font Awesome Pro subscription. Custom icon libraries may or may not use this property. /"
+        },
+        {
+            "name": "autoWidth",
+            "type": "boolean",
+            "description": "Sets the width of the icon to match the cropped SVG viewBox. This operates like the Font `fa-width-auto` class.",
+            "default": "false"
+        },
+        {
+            "name": "swapOpacity",
+            "type": "boolean",
+            "description": "Swaps the opacity of duotone icons.",
+            "default": "false"
+        },
+        {
+            "name": "library",
+            "type": "string",
+            "description": "The name of a registered custom icon library.",
+            "default": "'default'"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -1101,7 +1807,14 @@ export const components: ComponentInfo[] = [
     name: 'Include',
     description: 'Includes give you the power to embed external HTML files into the page.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "allowScripts",
+            "type": "boolean",
+            "description": "Allows included scripts to be executed. Be sure you trust the content you are including as it will be executed as code and can result in XSS attacks. /",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -1116,7 +1829,107 @@ export const components: ComponentInfo[] = [
     name: 'Input',
     description: 'Inputs collect data from the user.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "defaultValue",
+            "type": "string | null",
+            "description": "The default value of the form control. Primarily used for resetting the form control.",
+            "default": "this.getAttribute('value') || null"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The input's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "appearance",
+            "type": "'filled' | 'outlined' | 'filled-outlined'",
+            "description": "The input's visual appearance.",
+            "default": "'outlined'"
+        },
+        {
+            "name": "pill",
+            "type": "boolean",
+            "description": "Draws a pill-style input with rounded edges.",
+            "default": "false"
+        },
+        {
+            "name": "hint",
+            "type": "string",
+            "description": "The input's hint. If you need to display HTML, use the `hint` slot instead.",
+            "default": "''"
+        },
+        {
+            "name": "withClear",
+            "type": "boolean",
+            "description": "Adds a clear button when the input is not empty.",
+            "default": "false"
+        },
+        {
+            "name": "readonly",
+            "type": "boolean",
+            "description": "Makes the input readonly.",
+            "default": "false"
+        },
+        {
+            "name": "passwordToggle",
+            "type": "boolean",
+            "description": "Adds a button to toggle the password's visibility. Only applies to password types.",
+            "default": "false"
+        },
+        {
+            "name": "passwordVisible",
+            "type": "boolean",
+            "description": "Determines whether or not the password is currently visible. Only applies to password input types.",
+            "default": "false"
+        },
+        {
+            "name": "withoutSpinButtons",
+            "type": "boolean",
+            "description": "Hides the browser's built-in increment/decrement spin buttons for number inputs.",
+            "default": "false"
+        },
+        {
+            "name": "form",
+            "type": "string",
+            "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you to place the form control outside of a form and associate it with the form that has this `id`. The form must be in the same document or shadow root for this to work. /",
+            "default": "null"
+        },
+        {
+            "name": "required",
+            "type": "boolean",
+            "description": "Makes the input a required field.",
+            "default": "false"
+        },
+        {
+            "name": "minlength",
+            "type": "number",
+            "description": "The minimum length of input that will be considered valid."
+        },
+        {
+            "name": "maxlength",
+            "type": "number",
+            "description": "The maximum length of input that will be considered valid."
+        },
+        {
+            "name": "autofocus",
+            "type": "boolean",
+            "description": "Indicates that the input should receive focus on page load."
+        },
+        {
+            "name": "withLabel",
+            "type": "boolean",
+            "description": "Used for SSR. Will determine if the SSRed component will have the label slot rendered on initial paint. /",
+            "default": "false"
+        },
+        {
+            "name": "withHint",
+            "type": "boolean",
+            "description": "Used for SSR. Will determine if the SSRed component will have the hint slot rendered on initial paint. /",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -1213,7 +2026,32 @@ export const components: ComponentInfo[] = [
     name: 'Intersection Observer',
     description: 'Tracks immediate child elements and fires events as they move in and out of view.',
     category: 'Other',
-    properties: [],
+    properties: [
+        {
+            "name": "rootMargin",
+            "type": "string",
+            "description": "Offset space around the root boundary. Accepts values like CSS margin syntax.",
+            "default": "'0px'"
+        },
+        {
+            "name": "intersectClass",
+            "type": "string",
+            "description": "CSS class applied to elements during intersection. Automatically removed when elements leave the viewport, enabling pure CSS styling based on visibility state. /",
+            "default": "''"
+        },
+        {
+            "name": "once",
+            "type": "boolean",
+            "description": "If enabled, observation ceases after initial intersection.",
+            "default": "false"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Deactivates the intersection observer functionality.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [],
@@ -1223,7 +2061,43 @@ export const components: ComponentInfo[] = [
     name: 'Mutation Observer',
     description: 'The Mutation Observer component offers a thin, declarative interface to the MutationObserver API.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "attr",
+            "type": "string",
+            "description": "Watches for changes to attributes. To watch only specific attributes, separate them by a space, e.g. `attr=\"class id title\"`. To watch all attributes, use `*`. /"
+        },
+        {
+            "name": "attrOldValue",
+            "type": "boolean",
+            "description": "Indicates whether or not the attribute's previous value should be recorded when monitoring changes.",
+            "default": "false"
+        },
+        {
+            "name": "charData",
+            "type": "boolean",
+            "description": "Watches for changes to the character data contained within the node.",
+            "default": "false"
+        },
+        {
+            "name": "charDataOldValue",
+            "type": "boolean",
+            "description": "Indicates whether or not the previous value of the node's text should be recorded.",
+            "default": "false"
+        },
+        {
+            "name": "childList",
+            "type": "boolean",
+            "description": "Watches for the addition or removal of new child nodes.",
+            "default": "false"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the observer.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [],
@@ -1233,7 +2107,32 @@ export const components: ComponentInfo[] = [
     name: 'Option',
     description: 'Options define the selectable items within various form controls such as select.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "value",
+            "type": "string",
+            "description": "The option's value. When selected, the containing form control will receive this value. The value must be unique from other options in the same group. Values may not contain spaces, as spaces are used as delimiters when listing multiple values. /",
+            "default": "''"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Draws the option in a disabled state, preventing selection.",
+            "default": "false"
+        },
+        {
+            "name": "selected",
+            "type": "boolean",
+            "description": "@internal",
+            "default": "false"
+        },
+        {
+            "name": "defaultSelected",
+            "type": "boolean",
+            "description": "Selects an option initially.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [
         {
@@ -1269,7 +2168,32 @@ export const components: ComponentInfo[] = [
     name: 'Popover',
     description: 'Popovers display interactive content when their anchor element is clicked.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "open",
+            "type": "boolean",
+            "description": "Shows or hides the popover.",
+            "default": "false"
+        },
+        {
+            "name": "distance",
+            "type": "number",
+            "description": "The distance in pixels from which to offset the popover away from its target.",
+            "default": "8"
+        },
+        {
+            "name": "skidding",
+            "type": "number",
+            "description": "The distance in pixels from which to offset the popover along its target.",
+            "default": "0"
+        },
+        {
+            "name": "withoutArrow",
+            "type": "boolean",
+            "description": "Removes the arrow from the popover.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -1317,7 +2241,106 @@ export const components: ComponentInfo[] = [
     name: 'Popup',
     description: 'Popup is a utility that lets you declaratively anchor "popup" containers to another element.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "active",
+            "type": "boolean",
+            "description": "Activates the positioning logic and shows the popup. When this attribute is removed, the positioning logic is torn down and the popup will be hidden. /",
+            "default": "false"
+        },
+        {
+            "name": "distance",
+            "type": "number",
+            "description": "The distance in pixels from which to offset the panel away from its anchor.",
+            "default": "0"
+        },
+        {
+            "name": "skidding",
+            "type": "number",
+            "description": "The distance in pixels from which to offset the panel along its anchor.",
+            "default": "0"
+        },
+        {
+            "name": "arrow",
+            "type": "boolean",
+            "description": "Attaches an arrow to the popup. The arrow's size and color can be customized using the `--arrow-size` and `--arrow-color` custom properties. For additional customizations, you can also target the arrow using `::part(arrow)` in your stylesheet. /",
+            "default": "false"
+        },
+        {
+            "name": "arrowPlacement",
+            "type": "'start' | 'end' | 'center' | 'anchor'",
+            "description": "The placement of the arrow. The default is `anchor`, which will align the arrow as close to the center of the anchor as possible, considering available space and `arrow-padding`. A value of `start`, `end`, or `center` will align the arrow to the start, end, or center of the popover instead. /",
+            "default": "'anchor'"
+        },
+        {
+            "name": "arrowPadding",
+            "type": "number",
+            "description": "The amount of padding between the arrow and the edges of the popup. If the popup has a border-radius, for example, this will prevent it from overflowing the corners. /",
+            "default": "10"
+        },
+        {
+            "name": "flip",
+            "type": "boolean",
+            "description": "When set, placement of the popup will flip to the opposite site to keep it in view. You can use `flipFallbackPlacements` to further configure how the fallback placement is determined. /",
+            "default": "false"
+        },
+        {
+            "name": "flipFallbackStrategy",
+            "type": "'best-fit' | 'initial'",
+            "description": "When neither the preferred placement nor the fallback placements fit, this value will be used to determine whether the popup should be positioned using the best available fit based on available space or as it was initially preferred. /",
+            "default": "'best-fit'"
+        },
+        {
+            "name": "flipBoundary",
+            "type": "Element | Element[]",
+            "description": "The flip boundary describes clipping element(s) that overflow will be checked relative to when flipping. By default, the boundary includes overflow ancestors that will cause the element to be clipped. If needed, you can change the boundary by passing a reference to one or more elements to this property. /"
+        },
+        {
+            "name": "flipPadding",
+            "type": "number",
+            "description": "The amount of padding, in pixels, to exceed before the flip behavior will occur.",
+            "default": "0"
+        },
+        {
+            "name": "shift",
+            "type": "boolean",
+            "description": "Moves the popup along the axis to keep it in view when clipped.",
+            "default": "false"
+        },
+        {
+            "name": "shiftBoundary",
+            "type": "Element | Element[]",
+            "description": "The shift boundary describes clipping element(s) that overflow will be checked relative to when shifting. By default, the boundary includes overflow ancestors that will cause the element to be clipped. If needed, you can change the boundary by passing a reference to one or more elements to this property. /"
+        },
+        {
+            "name": "shiftPadding",
+            "type": "number",
+            "description": "The amount of padding, in pixels, to exceed before the shift behavior will occur.",
+            "default": "0"
+        },
+        {
+            "name": "autoSize",
+            "type": "'horizontal' | 'vertical' | 'both'",
+            "description": "When set, this will cause the popup to automatically resize itself to prevent it from overflowing."
+        },
+        {
+            "name": "autoSizeBoundary",
+            "type": "Element | Element[]",
+            "description": "The auto-size boundary describes clipping element(s) that overflow will be checked relative to when resizing. By default, the boundary includes overflow ancestors that will cause the element to be clipped. If needed, you can change the boundary by passing a reference to one or more elements to this property. /"
+        },
+        {
+            "name": "autoSizePadding",
+            "type": "number",
+            "description": "The amount of padding, in pixels, to exceed before the auto-size behavior will occur.",
+            "default": "0"
+        },
+        {
+            "name": "hoverBridge",
+            "type": "boolean",
+            "description": "When a gap exists between the anchor and the popup element, this option will add a \"hover bridge\" that fills the gap using an invisible element. This makes listening for events such as `mouseenter` and `mouseleave` more sane because the pointer never technically leaves the element. The hover bridge will only be drawn when the popover is active. /",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -1350,7 +2373,20 @@ export const components: ComponentInfo[] = [
     name: 'Progress Bar',
     description: 'Progress bars are used to show the status of an ongoing operation.',
     category: 'Feedback & Status',
-    properties: [],
+    properties: [
+        {
+            "name": "value",
+            "type": "number",
+            "description": "The current progress as a percentage, 0 to 100.",
+            "default": "0"
+        },
+        {
+            "name": "indeterminate",
+            "type": "boolean",
+            "description": "When true, percentage is ignored, the label is hidden, and the progress bar is drawn in an indeterminate state.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -1373,7 +2409,14 @@ export const components: ComponentInfo[] = [
     name: 'Progress Ring',
     description: 'Progress rings are used to show the progress of a determinate operation in a circular fashion.',
     category: 'Feedback & Status',
-    properties: [],
+    properties: [
+        {
+            "name": "value",
+            "type": "number",
+            "description": "The current progress as a percentage, 0 to 100.",
+            "default": "0"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -1392,7 +2435,26 @@ export const components: ComponentInfo[] = [
     name: 'QR Code',
     description: 'Generates a QR code and renders it using the Canvas API.',
     category: 'Actions',
-    properties: [],
+    properties: [
+        {
+            "name": "size",
+            "type": "number",
+            "description": "The size of the QR code, in pixels.",
+            "default": "128"
+        },
+        {
+            "name": "radius",
+            "type": "number",
+            "description": "The edge radius of each module. Must be between 0 and 0.5.",
+            "default": "0"
+        },
+        {
+            "name": "errorCorrection",
+            "type": "'L' | 'M' | 'Q' | 'H'",
+            "description": "The level of error correction to use. [Learn more](https://www.qrcode.com/en/about/error_correction.html)",
+            "default": "'H'"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -1407,7 +2469,62 @@ export const components: ComponentInfo[] = [
     name: 'Radio Group',
     description: 'Radio groups are used to group multiple radios so they function as a single form control.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "hint",
+            "type": "string",
+            "description": "The radio groups's hint. If you need to display HTML, use the `hint` slot instead.",
+            "default": "''"
+        },
+        {
+            "name": "name",
+            "type": "string | null",
+            "description": "The name of the radio group, submitted as a name/value pair with form data.",
+            "default": "null"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the radio group and all child radios.",
+            "default": "false"
+        },
+        {
+            "name": "orientation",
+            "type": "'horizontal' | 'vertical'",
+            "description": "The orientation in which to show radio items.",
+            "default": "'vertical'"
+        },
+        {
+            "name": "defaultValue",
+            "type": "string | null",
+            "description": "The default value of the form control. Primarily used for resetting the form control.",
+            "default": "this.getAttribute('value') || null"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The radio group's size. This size will be applied to all child radios and radio buttons, except when explicitly overridden.",
+            "default": "'medium'"
+        },
+        {
+            "name": "required",
+            "type": "boolean",
+            "description": "Ensures a child radio is checked before allowing the containing form to submit.",
+            "default": "false"
+        },
+        {
+            "name": "withLabel",
+            "type": "boolean",
+            "description": "Used for SSR. if true, will show slotted label on initial render. /",
+            "default": "false"
+        },
+        {
+            "name": "withHint",
+            "type": "boolean",
+            "description": "Used for SSR. if true, will show slotted hint on initial render. /",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "change",
@@ -1460,7 +2577,37 @@ export const components: ComponentInfo[] = [
     name: 'Radio',
     description: 'Radios allow the user to select a single option from a group.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "form",
+            "type": "string | null",
+            "description": "The string pointing to a form's id. /",
+            "default": "null"
+        },
+        {
+            "name": "value",
+            "type": "string",
+            "description": "The radio's value. When selected, the radio group will receive this value."
+        },
+        {
+            "name": "appearance",
+            "type": "'default' | 'button'",
+            "description": "The radio's visual appearance.",
+            "default": "'default'"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The radio's size. When used inside a radio group, the size will be determined by the radio group's size so this attribute can typically be omitted. /",
+            "default": "'medium'"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the radio.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -1492,7 +2639,44 @@ export const components: ComponentInfo[] = [
     name: 'Rating',
     description: 'Ratings give users a way to quickly view and provide feedback.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "value",
+            "type": "number",
+            "description": "The current rating.",
+            "default": "0"
+        },
+        {
+            "name": "max",
+            "type": "number",
+            "description": "The highest rating to show.",
+            "default": "5"
+        },
+        {
+            "name": "precision",
+            "type": "number",
+            "description": "The precision at which the rating will increase and decrease. For example, to allow half-star ratings, set this attribute to `0.5`. /",
+            "default": "1"
+        },
+        {
+            "name": "readonly",
+            "type": "boolean",
+            "description": "Makes the rating readonly.",
+            "default": "false"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the rating.",
+            "default": "false"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The component's size.",
+            "default": "'medium'"
+        }
+    ],
     events: [
         {
             "name": "change",
@@ -1512,7 +2696,14 @@ export const components: ComponentInfo[] = [
     name: 'Relative Time',
     description: 'Outputs a localized time phrase relative to the current date and time.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "sync",
+            "type": "boolean",
+            "description": "Keep the displayed value up to date as time passes.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [],
@@ -1522,7 +2713,14 @@ export const components: ComponentInfo[] = [
     name: 'Resize Observer',
     description: 'The Resize Observer component offers a thin, declarative interface to the ResizeObserver API.',
     category: 'Utilities',
-    properties: [],
+    properties: [
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the observer.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [],
@@ -1532,7 +2730,26 @@ export const components: ComponentInfo[] = [
     name: 'Scroller',
     description: 'Scrollers create an accessible container while providing visual cues that help users identify and navigate through content that scrolls.',
     category: 'Organization',
-    properties: [],
+    properties: [
+        {
+            "name": "orientation",
+            "type": "'horizontal' | 'vertical'",
+            "description": "The scroller's orientation.",
+            "default": "'horizontal'"
+        },
+        {
+            "name": "withoutScrollbar",
+            "type": "boolean",
+            "description": "Removes the visible scrollbar.",
+            "default": "false"
+        },
+        {
+            "name": "withoutShadow",
+            "type": "boolean",
+            "description": "Removes the shadows.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -1547,7 +2764,92 @@ export const components: ComponentInfo[] = [
     name: 'Select',
     description: 'Selects allow you to choose items from a menu of predefined options.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The select's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "multiple",
+            "type": "boolean",
+            "description": "Allows more than one option to be selected.",
+            "default": "false"
+        },
+        {
+            "name": "maxOptionsVisible",
+            "type": "number",
+            "description": "The maximum number of selected options to show when `multiple` is true. After the maximum, \"+n\" will be shown to indicate the number of additional items that are selected. Set to 0 to remove the limit. /",
+            "default": "3"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the select control.",
+            "default": "false"
+        },
+        {
+            "name": "withClear",
+            "type": "boolean",
+            "description": "Adds a clear button when the select is not empty.",
+            "default": "false"
+        },
+        {
+            "name": "open",
+            "type": "boolean",
+            "description": "Indicates whether or not the select is open. You can toggle this attribute to show and hide the menu, or you can use the `show()` and `hide()` methods and this attribute will reflect the select's open state. /",
+            "default": "false"
+        },
+        {
+            "name": "appearance",
+            "type": "'filled' | 'outlined' | 'filled-outlined'",
+            "description": "The select's visual appearance.",
+            "default": "'outlined'"
+        },
+        {
+            "name": "pill",
+            "type": "boolean",
+            "description": "Draws a pill-style select with rounded edges.",
+            "default": "false"
+        },
+        {
+            "name": "placement",
+            "type": "'top' | 'bottom'",
+            "description": "The preferred placement of the select's menu. Note that the actual placement may vary as needed to keep the listbox inside of the viewport. /",
+            "default": "'bottom'"
+        },
+        {
+            "name": "hint",
+            "type": "string",
+            "description": "The select's hint. If you need to display HTML, use the `hint` slot instead.",
+            "default": "''"
+        },
+        {
+            "name": "withLabel",
+            "type": "boolean",
+            "description": "Used for SSR purposes when a label is slotted in. Will show the label on first render. /",
+            "default": "false"
+        },
+        {
+            "name": "withHint",
+            "type": "boolean",
+            "description": "Used for SSR purposes when hint is slotted in. Will show the hint on first render. /",
+            "default": "false"
+        },
+        {
+            "name": "form",
+            "type": "string",
+            "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you to place the form control outside of a form and associate it with the form that has this `id`. The form must be in the same document or shadow root for this to work. /",
+            "default": "null"
+        },
+        {
+            "name": "required",
+            "type": "boolean",
+            "description": "The select's required attribute.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "change",
@@ -1688,7 +2990,14 @@ export const components: ComponentInfo[] = [
     name: 'Skeleton',
     description: 'Skeletons are used to provide a visual representation of where content will eventually be drawn.',
     category: 'Feedback & Status',
-    properties: [],
+    properties: [
+        {
+            "name": "effect",
+            "type": "'pulse' | 'sheen' | 'none'",
+            "description": "Determines which effect the skeleton will use.",
+            "default": "'none'"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -1703,7 +3012,125 @@ export const components: ComponentInfo[] = [
     name: 'Slider',
     description: 'Ranges allow the user to select a single value within a given range using a slider.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "hint",
+            "type": "string",
+            "description": "The slider hint. If you need to display HTML, use the hint slot instead.",
+            "default": "''"
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "description": "The name of the slider. This will be submitted with the form as a name/value pair."
+        },
+        {
+            "name": "minValue",
+            "type": "number",
+            "description": "The minimum value of a range selection. Used only when range attribute is set.",
+            "default": "0"
+        },
+        {
+            "name": "maxValue",
+            "type": "number",
+            "description": "The maximum value of a range selection. Used only when range attribute is set.",
+            "default": "50"
+        },
+        {
+            "name": "range",
+            "type": "boolean",
+            "description": "Converts the slider to a range slider with two thumbs.",
+            "default": "false"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the slider.",
+            "default": "false"
+        },
+        {
+            "name": "readonly",
+            "type": "boolean",
+            "description": "Makes the slider a read-only field.",
+            "default": "false"
+        },
+        {
+            "name": "orientation",
+            "type": "'horizontal' | 'vertical'",
+            "description": "The orientation of the slider.",
+            "default": "'horizontal'"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The slider's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "indicatorOffset",
+            "type": "number",
+            "description": "The starting value from which to draw the slider's fill, which is based on its current value."
+        },
+        {
+            "name": "form",
+            "type": "string",
+            "description": "The form to associate this control with. If omitted, the closest containing `<form>` will be used. The value of this attribute must be an ID of a form in the same document or shadow root. /",
+            "default": "null"
+        },
+        {
+            "name": "min",
+            "type": "number",
+            "description": "The minimum value allowed.",
+            "default": "0"
+        },
+        {
+            "name": "max",
+            "type": "number",
+            "description": "The maximum value allowed.",
+            "default": "100"
+        },
+        {
+            "name": "step",
+            "type": "number",
+            "description": "The granularity the value must adhere to when incrementing and decrementing.",
+            "default": "1"
+        },
+        {
+            "name": "required",
+            "type": "boolean",
+            "description": "Makes the slider a required field.",
+            "default": "false"
+        },
+        {
+            "name": "autofocus",
+            "type": "boolean",
+            "description": "Tells the browser to focus the slider when the page loads or a dialog is shown."
+        },
+        {
+            "name": "tooltipDistance",
+            "type": "number",
+            "description": "The distance of the tooltip from the slider's thumb.",
+            "default": "8"
+        },
+        {
+            "name": "withMarkers",
+            "type": "boolean",
+            "description": "Draws markers at each step along the slider.",
+            "default": "false"
+        },
+        {
+            "name": "withTooltip",
+            "type": "boolean",
+            "description": "Draws a tooltip above the thumb when the control has focus or is dragged.",
+            "default": "false"
+        },
+        {
+            "name": "valueFormatter",
+            "type": "(value: number)",
+            "description": "A custom formatting function to apply to the value. This will be shown in the tooltip and announced by screen readers. Must be set with JavaScript. Property only. /",
+            "default": "> string"
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -1823,7 +3250,37 @@ export const components: ComponentInfo[] = [
     name: 'Split Panel',
     description: 'Split panels display two adjacent panels, allowing the user to reposition them.',
     category: 'Organization',
-    properties: [],
+    properties: [
+        {
+            "name": "position",
+            "type": "number",
+            "description": "The current position of the divider from the primary panel's edge as a percentage 0-100. Defaults to 50% of the container's initial size. /",
+            "default": "50"
+        },
+        {
+            "name": "positionInPixels",
+            "type": "number",
+            "description": "The current position of the divider from the primary panel's edge in pixels."
+        },
+        {
+            "name": "orientation",
+            "type": "'horizontal' | 'vertical'",
+            "description": "Sets the split panel's orientation.",
+            "default": "'horizontal'"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables resizing. Note that the position may still change as a result of resizing the host element.",
+            "default": "false"
+        },
+        {
+            "name": "snapThreshold",
+            "type": "number",
+            "description": "How close the divider must be to a snap point until snapping occurs.",
+            "default": "12"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -1868,7 +3325,56 @@ export const components: ComponentInfo[] = [
     name: 'Switch',
     description: 'Switches allow the user to toggle an option on or off.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "name",
+            "type": "string | null",
+            "description": "The name of the switch, submitted as a name/value pair with form data.",
+            "default": "null"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The switch's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the switch.",
+            "default": "false"
+        },
+        {
+            "name": "checked",
+            "type": "boolean",
+            "description": "Draws the switch in a checked state.",
+            "default": "this.hasAttribute('checked')"
+        },
+        {
+            "name": "form",
+            "type": "string",
+            "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you to place the form control outside of a form and associate it with the form that has this `id`. The form must be in the same document or shadow root for this to work. /",
+            "default": "null"
+        },
+        {
+            "name": "required",
+            "type": "boolean",
+            "description": "Makes the switch a required field.",
+            "default": "false"
+        },
+        {
+            "name": "hint",
+            "type": "string",
+            "description": "The switch's hint. If you need to display HTML, use the `hint` slot instead.",
+            "default": "''"
+        },
+        {
+            "name": "withHint",
+            "type": "boolean",
+            "description": "Used for SSR. If you slot in hint, make sure to add `with-hint` to your component to get it to properly render with SSR. /",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -1925,7 +3431,20 @@ export const components: ComponentInfo[] = [
     name: 'Tab Group',
     description: 'Tab groups organize content into a container that shows one section at a time.',
     category: 'Navigation',
-    properties: [],
+    properties: [
+        {
+            "name": "active",
+            "type": "string",
+            "description": "Sets the active tab.",
+            "default": "''"
+        },
+        {
+            "name": "withoutScrollControls",
+            "type": "boolean",
+            "description": "Disables the scroll arrows that appear when tabs overflow.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [
         {
@@ -1973,7 +3492,20 @@ export const components: ComponentInfo[] = [
     name: 'Tab Panel',
     description: 'Tab panels are used inside tab groups to display tabbed content.',
     category: 'Navigation',
-    properties: [],
+    properties: [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "The tab panel's name.",
+            "default": "''"
+        },
+        {
+            "name": "active",
+            "type": "boolean",
+            "description": "When true, the tab panel will be shown.",
+            "default": "false"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -1988,7 +3520,32 @@ export const components: ComponentInfo[] = [
     name: 'Tab',
     description: 'Tabs are used inside tab groups to represent and activate tab panels.',
     category: 'Navigation',
-    properties: [],
+    properties: [
+        {
+            "name": "panel",
+            "type": "string",
+            "description": "The name of the tab panel this tab is associated with. The panel must be located in the same tab group.",
+            "default": "''"
+        },
+        {
+            "name": "active",
+            "type": "boolean",
+            "description": "@internal Draws the tab in an active state.",
+            "default": "false"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the tab and prevents selection.",
+            "default": "false"
+        },
+        {
+            "name": "tabIndex",
+            "type": "number",
+            "description": "@internal Need to wrap in a `@property()` otherwise NextJS blows up. /",
+            "default": "0"
+        }
+    ],
     events: [],
     slots: [],
     cssParts: [
@@ -2003,7 +3560,38 @@ export const components: ComponentInfo[] = [
     name: 'Tag',
     description: 'Tags are used as labels to organize things or to indicate a selection.',
     category: 'Feedback & Status',
-    properties: [],
+    properties: [
+        {
+            "name": "variant",
+            "type": "'brand' | 'neutral' | 'success' | 'warning' | 'danger'",
+            "description": "The tag's theme variant. Defaults to `neutral` if not within another element with a variant.",
+            "default": "'neutral'"
+        },
+        {
+            "name": "appearance",
+            "type": "'accent' | 'filled' | 'outlined' | 'filled-outlined'",
+            "description": "The tag's visual appearance.",
+            "default": "'filled-outlined'"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The tag's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "pill",
+            "type": "boolean",
+            "description": "Draws a pill-style tag with rounded edges.",
+            "default": "false"
+        },
+        {
+            "name": "withRemove",
+            "type": "boolean",
+            "description": "Makes the tag removable and shows a remove button.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -2035,7 +3623,101 @@ export const components: ComponentInfo[] = [
     name: 'Textarea',
     description: 'Textareas collect data from the user and allow multiple lines of text.',
     category: 'Form Controls',
-    properties: [],
+    properties: [
+        {
+            "name": "name",
+            "type": "string | null",
+            "description": "The name of the textarea, submitted as a name/value pair with form data.",
+            "default": "null"
+        },
+        {
+            "name": "defaultValue",
+            "type": "string",
+            "description": "The default value of the form control. Primarily used for resetting the form control.",
+            "default": "this.getAttribute('value') ?? ''"
+        },
+        {
+            "name": "size",
+            "type": "'small' | 'medium' | 'large'",
+            "description": "The textarea's size.",
+            "default": "'medium'"
+        },
+        {
+            "name": "appearance",
+            "type": "'filled' | 'outlined' | 'filled-outlined'",
+            "description": "The textarea's visual appearance.",
+            "default": "'outlined'"
+        },
+        {
+            "name": "hint",
+            "type": "string",
+            "description": "The textarea's hint. If you need to display HTML, use the `hint` slot instead.",
+            "default": "''"
+        },
+        {
+            "name": "rows",
+            "type": "number",
+            "description": "The number of rows to display by default.",
+            "default": "4"
+        },
+        {
+            "name": "resize",
+            "type": "'none' | 'vertical' | 'horizontal' | 'both' | 'auto'",
+            "description": "Controls how the textarea can be resized.",
+            "default": "'vertical'"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the textarea.",
+            "default": "false"
+        },
+        {
+            "name": "readonly",
+            "type": "boolean",
+            "description": "Makes the textarea readonly.",
+            "default": "false"
+        },
+        {
+            "name": "form",
+            "type": "string",
+            "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you to place the form control outside of a form and associate it with the form that has this `id`. The form must be in the same document or shadow root for this to work. /",
+            "default": "null"
+        },
+        {
+            "name": "required",
+            "type": "boolean",
+            "description": "Makes the textarea a required field.",
+            "default": "false"
+        },
+        {
+            "name": "minlength",
+            "type": "number",
+            "description": "The minimum length of input that will be considered valid."
+        },
+        {
+            "name": "maxlength",
+            "type": "number",
+            "description": "The maximum length of input that will be considered valid."
+        },
+        {
+            "name": "autofocus",
+            "type": "boolean",
+            "description": "Indicates that the input should receive focus on page load."
+        },
+        {
+            "name": "withLabel",
+            "type": "boolean",
+            "description": "Used for SSR. If you're slotting in a `label` element, make sure to set this to `true`. /",
+            "default": "false"
+        },
+        {
+            "name": "withHint",
+            "type": "boolean",
+            "description": "Used for SSR. If you're slotting in a `hint` element, make sure to set this to `true`. /",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "blur",
@@ -2096,7 +3778,50 @@ export const components: ComponentInfo[] = [
     name: 'Tooltip',
     description: 'Tooltips display additional information based on a specific action.',
     category: 'Feedback & Status',
-    properties: [],
+    properties: [
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the tooltip so it won't show when triggered.",
+            "default": "false"
+        },
+        {
+            "name": "distance",
+            "type": "number",
+            "description": "The distance in pixels from which to offset the tooltip away from its target.",
+            "default": "8"
+        },
+        {
+            "name": "open",
+            "type": "boolean",
+            "description": "Indicates whether or not the tooltip is open. You can use this in lieu of the show/hide methods.",
+            "default": "false"
+        },
+        {
+            "name": "skidding",
+            "type": "number",
+            "description": "The distance in pixels from which to offset the tooltip along its target.",
+            "default": "0"
+        },
+        {
+            "name": "showDelay",
+            "type": "number",
+            "description": "The amount of time to wait before showing the tooltip when the user mouses in.",
+            "default": "150"
+        },
+        {
+            "name": "hideDelay",
+            "type": "number",
+            "description": "The amount of time to wait before hiding the tooltip when the user mouses out..",
+            "default": "0"
+        },
+        {
+            "name": "withoutArrow",
+            "type": "boolean",
+            "description": "Removes the arrow from the tooltip.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -2140,7 +3865,32 @@ export const components: ComponentInfo[] = [
     name: 'Tree Item',
     description: 'A tree item serves as a hierarchical node that lives inside a tree.',
     category: 'Navigation',
-    properties: [],
+    properties: [
+        {
+            "name": "expanded",
+            "type": "boolean",
+            "description": "Expands the tree item.",
+            "default": "false"
+        },
+        {
+            "name": "selected",
+            "type": "boolean",
+            "description": "Draws the tree item in a selected state.",
+            "default": "false"
+        },
+        {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the tree item.",
+            "default": "false"
+        },
+        {
+            "name": "lazy",
+            "type": "boolean",
+            "description": "Enables lazy loading behavior.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "wa",
@@ -2265,7 +4015,38 @@ export const components: ComponentInfo[] = [
     name: 'Zoomable Frame',
     description: 'Zoomable frames render iframe content with zoom and interaction controls.',
     category: 'Imagery',
-    properties: [],
+    properties: [
+        {
+            "name": "allowfullscreen",
+            "type": "boolean",
+            "description": "Allows fullscreen mode.",
+            "default": "false"
+        },
+        {
+            "name": "zoom",
+            "type": "number",
+            "description": "The current zoom of the frame, e.g. 0 = 0% and 1 = 100%.",
+            "default": "1"
+        },
+        {
+            "name": "zoomLevels",
+            "type": "string",
+            "description": "The zoom levels to step through when using zoom controls. This does not restrict programmatic changes to the zoom. /",
+            "default": "'25% 50% 75% 100% 125% 150% 175% 200%'"
+        },
+        {
+            "name": "withoutControls",
+            "type": "boolean",
+            "description": "Removes the zoom controls.",
+            "default": "false"
+        },
+        {
+            "name": "withoutInteraction",
+            "type": "boolean",
+            "description": "Disables interaction when present.",
+            "default": "false"
+        }
+    ],
     events: [
         {
             "name": "load",
