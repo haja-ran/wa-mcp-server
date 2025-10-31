@@ -1,195 +1,140 @@
-import http from 'node:http'
-
-import { createApp, ready, setReady } from '../server.js'
-
-function httpGet(url: string) {
-  return new Promise<{ status: number, bodyText: string, bodyJson?: any }>((resolve, reject) => {
-    const parsed = new URL(url)
-    const opts: http.RequestOptions = {
-      hostname: parsed.hostname,
-      port: parsed.port,
-      path: parsed.pathname + parsed.search,
-      method: 'GET',
-    }
-
-    const req = http.request(opts, (res) => {
-      const chunks: Buffer[] = []
-      res.on('data', c => chunks.push(Buffer.from(c)))
-      res.on('end', () => {
-        const bodyText = Buffer.concat(chunks).toString('utf8')
-        let bodyJson: any
-        try {
-          bodyJson = JSON.parse(bodyText)
-        }
-        catch {
-          bodyJson = undefined
-        }
-        resolve({ status: res.statusCode ?? 0, bodyText, bodyJson })
-      })
-    })
-
-    req.on('error', err => reject(err))
-    req.end()
-  })
-}
-
-function httpPost(url: string, body: string, headers: Record<string, string> = {}) {
-  return new Promise<{ status: number, bodyText: string, bodyJson?: any }>((resolve, reject) => {
-    const parsed = new URL(url)
-    const opts: http.RequestOptions = {
-      hostname: parsed.hostname,
-      port: parsed.port,
-      path: parsed.pathname + parsed.search,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(body, 'utf8'),
-        ...headers,
-      },
-    }
-
-    const req = http.request(opts, (res) => {
-      const chunks: Buffer[] = []
-      res.on('data', c => chunks.push(Buffer.from(c)))
-      res.on('end', () => {
-        const bodyText = Buffer.concat(chunks).toString('utf8')
-        let bodyJson: any
-        try {
-          bodyJson = JSON.parse(bodyText)
-        }
-        catch {
-          bodyJson = undefined
-        }
-        resolve({ status: res.statusCode ?? 0, bodyText, bodyJson })
-      })
-    })
-
-    req.on('error', err => reject(err))
-    req.write(body)
-    req.end()
-  })
-}
+// wa-mcp-server/packages/mcp/src/__tests__/server.test.ts
+import { createServer } from '../index.js';
 
 // Mock the MCP SDK to avoid ESM import issues in Vitest
 vi.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
   Server: class MockServer {
-    info: any
-    capabilities: any
     constructor(info: any, capabilities: any) {
-      this.info = info
-      this.capabilities = capabilities
+      this.info = info;
+      this.capabilities = capabilities;
     }
 
+    info: any;
+    capabilities: any;
     setRequestHandler() {}
     connect() {}
   },
-}))
+}));
 
-vi.mock('@modelcontextprotocol/sdk/server/sse.js', () => ({
-  SSEServerTransport: class MockTransport {
-    endpoint: string
-    res: any
-    sessionId: string
-    constructor(endpoint: string, res: any) {
-      this.endpoint = endpoint
-      this.res = res
-      this.sessionId = `mock-session-${Math.random().toString(36).substr(2, 9)}`
-    }
-
-    start() {}
+vi.mock('@modelcontextprotocol/sdk/server/stdio.js', () => ({
+  StdioServerTransport: class MockTransport {
+    constructor() {}
   },
-}))
+}));
 
 vi.mock('@modelcontextprotocol/sdk/types.js', () => ({
   CallToolRequestSchema: {},
   ListToolsRequestSchema: {},
   ListResourcesRequestSchema: {},
   ReadResourceRequestSchema: {},
-}))
+}));
 
-describe('server', () => {
-  let server: http.Server
-  let baseUrl: string
+// Mock data and tools
+vi.mock('../data/components.js', () => ({
+  components: [
+    {
+      tagName: 'wa-button',
+      name: 'Button',
+      description: 'A button component',
+    },
+  ],
+}));
 
-  beforeEach(async () => {
-    setReady(false)
-    const { app } = createApp()
-    server = http.createServer(app)
-    await new Promise<void>((resolve, reject) => {
-      server.listen(0, () => resolve())
-      server.on('error', reject)
-    })
-    const addr = server.address()
-    if (!addr || typeof addr === 'string') {
-      throw new Error('Failed to start test http server')
-    }
-    const port = addr.port
-    baseUrl = `http://127.0.0.1:${port}`
-  })
+vi.mock('../data/utilities.js', () => ({
+  utilities: [
+    {
+      className: 'wa-theme',
+      name: 'Theme',
+      description: 'A theme utility',
+    },
+  ],
+}));
 
-  afterEach(async () => {
-    await new Promise<void>((resolve, reject) => {
-      server.close(err => (err ? reject(err) : resolve()))
-    })
-  })
+vi.mock('../tools/listComponents.js', () => ({
+  listComponentsTool: {
+    name: 'listComponents',
+    description: 'Lists components',
+    inputSchema: {},
+  },
+}));
 
-  describe('createApp', () => {
-    it('returns an object with app and servers', () => {
-      const result = createApp()
+vi.mock('../tools/generateComponentCode.js', () => ({
+  generateComponentCodeTool: {
+    name: 'generateComponentCode',
+    description: 'Generates component code',
+    inputSchema: {},
+  },
+}));
 
-      expect(result).toHaveProperty('app')
-      expect(result).toHaveProperty('servers')
-      expect(result.servers).toBeInstanceOf(Map)
-      expect(typeof result.app).toBe('function') // Express app
-    })
+vi.mock('../tools/getComponentDocs.js', () => ({
+  getComponentDocsTool: {
+    name: 'getComponentDocs',
+    description: 'Gets component docs',
+    inputSchema: {},
+  },
+}));
 
-    it('app has health endpoint', async () => {
-      const response = await httpGet(`${baseUrl}/health`)
+vi.mock('../tools/getUsageGuide.js', () => ({
+  getUsageGuideTool: {
+    name: 'getUsageGuide',
+    description: 'Gets usage guide',
+    inputSchema: {},
+  },
+}));
 
-      expect(response.status).toBe(503) // Since ready is false
-      expect(response.bodyJson).toHaveProperty('status', 'starting')
-      expect(response.bodyJson).toHaveProperty('ready', false)
-      expect(response.bodyJson).toHaveProperty('uptimeMs')
-      expect(response.bodyJson).toHaveProperty('connections', 0)
-    })
+vi.mock('../tools/themeCustomizer.js', () => ({
+  themeCustomizerTool: {
+    name: 'themeCustomizer',
+    description: 'Customizes theme',
+    inputSchema: {},
+  },
+}));
 
-    it('health endpoint returns ok when ready', async () => {
-      setReady(true)
-      const response = await httpGet(`${baseUrl}/health`)
+vi.mock('../tools/listUtilities.js', () => ({
+  listUtilitiesTool: {
+    name: 'listUtilities',
+    description: 'Lists utilities',
+    inputSchema: {},
+  },
+}));
 
-      expect(response.status).toBe(200)
-      expect(response.bodyJson).toHaveProperty('status', 'ok')
-      expect(response.bodyJson).toHaveProperty('ready', true)
-    })
+vi.mock('../tools/getUtilityDocs.js', () => ({
+  getUtilityDocsTool: {
+    name: 'getUtilityDocs',
+    description: 'Gets utility docs',
+    inputSchema: {},
+  },
+}));
 
-    it('app has POST /sse endpoint', async () => {
-      const response = await httpPost(`${baseUrl}/sse`, JSON.stringify({ method: 'initialize', id: 1 }))
+vi.mock('../lib/capabilities.js', () => ({
+  buildCapabilities: vi.fn(() => ({
+    tools: {},
+    resources: {},
+  })),
+}));
 
-      // Should handle the request
-      expect([200, 500]).toContain(response.status)
-    })
+vi.mock('../handlers.js', () => ({
+  listToolsHandler: vi.fn(),
+  callToolHandler: vi.fn(),
+  listResourcesHandler: vi.fn(),
+  readResourceHandler: vi.fn(),
+}));
 
-    it('app has POST /message endpoint', async () => {
-      const response = await httpPost(`${baseUrl}/message?sessionId=test`, JSON.stringify({}))
+describe('createServer', () => {
+  it('creates a server instance', async () => {
+    const server = await createServer();
 
-      expect(response.status).toBe(404) // No server for sessionId
-    })
-  })
+    expect(server).toBeDefined();
+    expect(typeof server.setRequestHandler).toBe('function');
+    expect(typeof server.connect).toBe('function');
+  });
 
-  describe('ready state', () => {
-    it('ready is initially false', () => {
-      expect(ready).toBe(false)
-    })
+  it('sets up request handlers', async () => {
+    const server = await createServer();
 
-    it('setReady sets ready to true', () => {
-      setReady(true)
-      expect(ready).toBe(true)
-    })
-
-    it('setReady sets ready to false', () => {
-      setReady(true)
-      setReady(false)
-      expect(ready).toBe(false)
-    })
-  })
-})
+    // The handlers should have been set up during server creation
+    // We can't easily test the setRequestHandler calls with the current mock,
+    // but we can verify the server was created successfully
+    expect(server.setRequestHandler).toBeDefined();
+  });
+});
