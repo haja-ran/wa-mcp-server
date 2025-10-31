@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/haja-ran/wa-mcp-server/compare/v1.0.0...v1.1.0) (2025-10-31)
+
+
+### Features
+
+* first release ([83966c0](https://github.com/haja-ran/wa-mcp-server/commit/83966c0746490dad409ab4ee4fa67bf7b46bb92a))
+
 # 1.0.0 (2025-10-31)
 
 
