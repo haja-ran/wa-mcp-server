@@ -23,7 +23,7 @@ The core **Model Context Protocol (MCP) server** that provides AI assistants wit
 npx @sha-bang/wa-mcp
 ```
 
-📖 **[Full Documentation](./packages/mcp/README.md)**
+https://github.com/user-attachments/assets/968ccaab-7656-4d43-b1eb-32d16dc3e101
 
 ---
 
