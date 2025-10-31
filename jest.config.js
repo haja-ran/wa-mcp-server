@@ -10,6 +10,9 @@ export default {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!@modelcontextprotocol)',
+  ],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },

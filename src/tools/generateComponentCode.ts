@@ -1,48 +1,49 @@
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { components } from '../data/components.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js'
+import { components } from '../data/components.js'
 
 export const generateComponentCodeTool: Tool = {
   name: 'generateComponentCode',
-  description: 'Génère du code HTML pour un composant Web Awesome avec des options personnalisées.',
+  description: 'Generates HTML code for a Web Awesome component with custom options.',
   inputSchema: {
     type: 'object',
     properties: {
       tagName: {
         type: 'string',
-        description: 'Le nom du tag du composant (ex: wa-button).',
+        description: 'The tag name of the component (e.g. wa-button).',
       },
       properties: {
         type: 'object',
-        description: 'Propriétés à appliquer au composant.',
+        description: 'Properties to apply to the component.',
       },
       content: {
         type: 'string',
-        description: 'Contenu du slot par défaut.',
+        description: 'Content of the default slot.',
       },
     },
     required: ['tagName'],
   },
-};
+}
 
-generateComponentCodeTool.handler = async (args: { tagName: string; properties?: Record<string, any>; content?: string }) => {
-  const component = components.find(c => c.tagName === args.tagName);
+generateComponentCodeTool.handler = async (args: { tagName: string, properties?: Record<string, any>, content?: string }) => {
+  const component = components.find(c => c.tagName === args.tagName)
   if (!component) {
-    throw new Error(`Composant ${args.tagName} non trouvé.`);
+    throw new Error(`Component ${args.tagName} not found.`)
   }
 
-  let attributes = '';
+  let attributes = ''
   if (args.properties) {
     for (const [key, value] of Object.entries(args.properties)) {
       if (typeof value === 'boolean') {
-        attributes += value ? ` ${key}` : '';
-      } else {
-        attributes += ` ${key}="${value}"`;
+        attributes += value ? ` ${key}` : ''
+      }
+      else {
+        attributes += ` ${key}="${value}"`
       }
     }
   }
 
-  const content = args.content || '';
-  const html = `<${args.tagName}${attributes}>${content}</${args.tagName}>`;
+  const content = args.content || ''
+  const html = `<${args.tagName}${attributes}>${content}</${args.tagName}>`
 
   return {
     content: [
@@ -51,5 +52,5 @@ generateComponentCodeTool.handler = async (args: { tagName: string; properties?:
         text: html,
       },
     ],
-  };
-};
+  }
+}

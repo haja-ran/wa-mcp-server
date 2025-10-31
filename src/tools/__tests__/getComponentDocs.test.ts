@@ -10,6 +10,6 @@ describe('getComponentDocsTool', () => {
   });
 
   it('should throw error for invalid component', async () => {
-    await expect((getComponentDocsTool as any).handler({ tagName: 'invalid' })).rejects.toThrow('Composant invalid non trouvé.');
+    await expect((getComponentDocsTool as any).handler({ tagName: 'invalid' })).rejects.toThrow('Component invalid not found.');
   });
 });

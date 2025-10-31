@@ -3,13 +3,11 @@
    and will assign them with dynamic imports where needed. */
 let Server: any;
 let SSEServerTransport: any;
-let CallToolRequest: any;
 let CallToolRequestSchema: any;
 let ListResourcesRequestSchema: any;
 let ListToolsRequestSchema: any;
-let ReadResourceRequest: any;
 let ReadResourceRequestSchema: any;
-import express, { Request, Response } from 'express';
+import express, { type Request, type Response } from 'express';
 import getRawBody from 'raw-body';
  // simplified content-type handling — avoid importing 'content-type' to prevent missing @types issues
 import { randomUUID } from 'node:crypto';
@@ -23,7 +21,7 @@ import { listComponentsTool } from './tools/listComponents.js';
 import { listUtilitiesTool } from './tools/listUtilities.js';
 import { themeCustomizerTool } from './tools/themeCustomizer.js';
 // helper to build dynamic capabilities payloads (tools + resources)
-import { buildCapabilities, buildHandshakeResult } from './lib/capabilities.js';
+import { buildCapabilities } from './lib/capabilities.js';
 
 const startTime = Date.now();
 let ready = false;
@@ -312,45 +310,36 @@ export function createApp() {
   // Supports two modes:
   // 1) Handshake (no sessionId): client POSTs to /sse without sessionId to obtain a sessionId/endpoint.
   // 2) Message delivery: client POSTs to /sse?sessionId=... to deliver JSON-RPC messages.
-  // Accept JSON bodies on this route (many clients POST JSON directly).
-  // Use per-route `express.json()` so we don't affect other endpoints which require raw body access.
-  app.post('/sse', express.json(), async (req: Request, res: Response) => {
+  // Read raw body to handle JSON parsing manually, avoiding middleware conflicts.
+  app.post('/sse', async (req: Request, res: Response) => {
     console.log('Received POST to /sse');
 
     const sessionId = (req.query.sessionId as string) || '';
- 
+
     // Handshake mode: create a new session and return an endpoint + sessionId
     // For compatibility with http-first clients (like mcp-remote), accept a JSON-RPC
     // handshake payload and reply with a JSON-RPC 2.0 response containing the
     // sessionId + endpoint if an `id` is present. If the handshake is not JSON-RPC
     // (no id), fall back to returning plain JSON.
     if (!sessionId) {
-      // Prefer a parsed JSON body from the route-specific middleware if present.
-      // If no parsed body (e.g. client sent an empty body or another content-type), fall back to raw body.
+      // Read raw body and parse JSON manually.
       let message: any = undefined;
+      let rawBody: string | undefined;
+      try {
+        const contentTypeHeader = (req.headers['content-type'] as string) || 'application/json';
+        const match = /charset=([^;]+)/i.exec(contentTypeHeader);
+        const encoding = match ? match[1].trim() : 'utf-8';
+        rawBody = await getRawBody(req, { encoding });
+      } catch {
+        rawBody = undefined;
+      }
 
-      if (req.body && Object.keys(req.body).length > 0) {
-        // Client already sent a parsed JSON payload (express.json() handled it).
-        message = req.body;
-      } else {
-        // Fall back to reading raw body (some clients/proxies may not have populated req.body).
-        let rawBody: string | undefined;
-        try {
-          const contentTypeHeader = (req.headers['content-type'] as string) || 'application/json';
-          const match = /charset=([^;]+)/i.exec(contentTypeHeader);
-          const encoding = match ? match[1].trim() : 'utf-8';
-          rawBody = await getRawBody(req, { encoding });
-        } catch {
-          rawBody = undefined;
+      try {
+        if (rawBody) {
+          message = JSON.parse(String(rawBody));
         }
-
-        try {
-          if (rawBody) {
-            message = JSON.parse(String(rawBody));
-          }
-        } catch {
-          message = undefined;
-        }
+      } catch {
+        message = undefined;
       }
 
       // If this is a JSON-RPC `initialize` request, perform the handshake flow.

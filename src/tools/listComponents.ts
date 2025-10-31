@@ -1,25 +1,25 @@
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { components } from '../data/components.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js'
+import { components } from '../data/components.js'
 
 export const listComponentsTool: Tool = {
   name: 'listComponents',
-  description: 'Liste tous les composants Web Awesome disponibles avec leurs descriptions.',
+  description: 'List all available Web Awesome components with their descriptions.',
   inputSchema: {
     type: 'object',
     properties: {
       category: {
         type: 'string',
-        description: 'Filtrer par catégorie (optionnel).',
+        description: 'Filter by category (optional).',
       },
     },
   },
-};
+}
 
 listComponentsTool.handler = async (args: any) => {
-  let filteredComponents = components;
+  let filteredComponents = components
 
   if (args.category) {
-    filteredComponents = components.filter(c => c.category.toLowerCase().includes(args.category.toLowerCase()));
+    filteredComponents = components.filter(c => c.category.toLowerCase().includes(args.category.toLowerCase()))
   }
 
   const result = filteredComponents.map(c => ({
@@ -27,7 +27,7 @@ listComponentsTool.handler = async (args: any) => {
     name: c.name,
     description: c.description,
     category: c.category,
-  }));
+  }))
 
   return {
     content: [
@@ -36,5 +36,5 @@ listComponentsTool.handler = async (args: any) => {
         text: JSON.stringify(result, null, 2),
       },
     ],
-  };
-};
+  }
+}

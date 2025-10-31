@@ -1,25 +1,25 @@
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { components } from '../data/components.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js'
+import { components } from '../data/components.js'
 
 export const getComponentDocsTool: Tool = {
   name: 'getComponentDocs',
-  description: 'Récupère la documentation détaillée d\'un composant Web Awesome.',
+  description: 'Retrieves the detailed documentation of a Web Awesome component.',
   inputSchema: {
     type: 'object',
     properties: {
       tagName: {
         type: 'string',
-        description: 'Le nom du tag du composant (ex: wa-button).',
+        description: 'The tag name of the component (e.g. wa-button).',
       },
     },
     required: ['tagName'],
   },
-};
+}
 
 getComponentDocsTool.handler = async (args: { tagName: string }) => {
-  const component = components.find(c => c.tagName === args.tagName);
+  const component = components.find(c => c.tagName === args.tagName)
   if (!component) {
-    throw new Error(`Composant ${args.tagName} non trouvé.`);
+    throw new Error(`Component ${args.tagName} not found.`)
   }
 
   const docs = {
@@ -31,7 +31,7 @@ getComponentDocsTool.handler = async (args: { tagName: string }) => {
     events: component.events,
     slots: component.slots,
     cssParts: component.cssParts,
-  };
+  }
 
   return {
     content: [
@@ -40,5 +40,5 @@ getComponentDocsTool.handler = async (args: { tagName: string }) => {
         text: JSON.stringify(docs, null, 2),
       },
     ],
-  };
-};
+  }
+}

@@ -1,25 +1,25 @@
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { utilities } from '../data/utilities.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js'
+import { utilities } from '../data/utilities.js'
 
 export const getUtilityDocsTool: Tool = {
   name: 'getUtilityDocs',
-  description: 'Récupère la documentation détaillée d\'un utilitaire Web Awesome.',
+  description: 'Retrieves the detailed documentation of a Web Awesome utility.',
   inputSchema: {
     type: 'object',
     properties: {
       className: {
         type: 'string',
-        description: 'Le nom de la classe de l\'utilitaire (ex: wa-stack).'
+        description: 'The class name of the utility (e.g. wa-stack).',
       },
     },
     required: ['className'],
   },
-};
+}
 
 getUtilityDocsTool.handler = async (args: { className: string }) => {
-  const utility = utilities.find(u => u.className === args.className);
+  const utility = utilities.find(u => u.className === args.className)
   if (!utility) {
-    throw new Error(`Utilitaire ${args.className} non trouvé.`);
+    throw new Error(`Utility ${args.className} not found.`)
   }
 
   const docs = {
@@ -28,7 +28,7 @@ getUtilityDocsTool.handler = async (args: { className: string }) => {
     description: utility.description,
     category: utility.category,
     examples: utility.examples || [],
-  };
+  }
 
   return {
     content: [
@@ -37,5 +37,5 @@ getUtilityDocsTool.handler = async (args: { className: string }) => {
         text: JSON.stringify(docs, null, 2),
       },
     ],
-  };
-};
+  }
+}

@@ -1,6 +1,6 @@
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js'
 
-const USAGE_GUIDE_URL = 'https://raw.githubusercontent.com/shoelace-style/webawesome/refs/heads/next/packages/webawesome/docs/docs/usage.md';
+const USAGE_GUIDE_URL = 'https://raw.githubusercontent.com/shoelace-style/webawesome/refs/heads/next/packages/webawesome/docs/docs/usage.md'
 
 export const getUsageGuideTool: Tool = {
   name: 'getUsageGuide',
@@ -9,15 +9,15 @@ export const getUsageGuideTool: Tool = {
     type: 'object',
     properties: {},
   },
-};
+}
 
 getUsageGuideTool.handler = async () => {
   try {
-    const response = await fetch(USAGE_GUIDE_URL);
+    const response = await fetch(USAGE_GUIDE_URL)
     if (!response.ok) {
-      throw new Error(`Failed to fetch usage guide: ${response.status}`);
+      throw new Error(`Failed to fetch usage guide: ${response.status}`)
     }
-    const content = await response.text();
+    const content = await response.text()
     return {
       content: [
         {
@@ -25,9 +25,10 @@ getUsageGuideTool.handler = async () => {
           text: content,
         },
       ],
-    };
-  } catch (error) {
-    console.error('Error fetching usage guide:', error);
+    }
+  }
+  catch (error) {
+    console.error('Error fetching usage guide:', error)
     return {
       content: [
         {
@@ -35,6 +36,6 @@ getUsageGuideTool.handler = async () => {
           text: 'Error: Unable to fetch usage guide. Please check your internet connection and try again.',
         },
       ],
-    };
+    }
   }
-};
+}

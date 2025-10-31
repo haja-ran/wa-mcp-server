@@ -1,4 +1,4 @@
-// Configuration pour les URLs des composants Web Awesome
+// Configuration for Web Awesome component URLs
 export const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/shoelace-style/webawesome/next/packages/webawesome';
 
 export const GITHUB_API_BASE_URL = 'https://api.github.com/repos/shoelace-style/webawesome';

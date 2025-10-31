@@ -27,6 +27,6 @@ describe('generateComponentCodeTool', () => {
   });
 
   it('should throw error for invalid component', async () => {
-    await expect((generateComponentCodeTool as any).handler({ tagName: 'invalid' })).rejects.toThrow('Composant invalid non trouvé.');
+    await expect((generateComponentCodeTool as any).handler({ tagName: 'invalid' })).rejects.toThrow('Component invalid not found.');
   });
 });

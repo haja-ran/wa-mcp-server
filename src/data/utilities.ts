@@ -1,10 +1,10 @@
-// Données des utilitaires Web Awesome
+// Web Awesome utilities data
 export interface UtilityInfo {
-  className: string;
-  name: string;
-  description: string;
-  category: string;
-  examples?: string[];
+  className: string
+  name: string
+  description: string
+  category: string
+  examples?: string[]
 }
 
 export const utilities: UtilityInfo[] = [
@@ -566,4 +566,4 @@ export const utilities: UtilityInfo[] = [
     description: 'Apply warning color variant.',
     category: 'Color',
   },
-];
+]

@@ -31,7 +31,7 @@ interface ComponentInfo {
 async function fetchComponents(): Promise<ComponentInfo[]> {
   const components: ComponentInfo[] = [];
 
-  // Récupérer dynamiquement la liste des composants depuis GitHub
+  // Retrieve dynamically the list of components from GitHub
   const componentNames = await fetchComponentNames();
   console.log(`Found ${componentNames.length} components:`, componentNames.join(', '));
 
@@ -137,7 +137,7 @@ export const components: ComponentInfo[] = [
 ${componentStrings}
 ];`;
 
-  return `// Données des composants Web Awesome générées automatiquement
+  return `// Automatically generated Web Awesome component data
 ${interfaceStr}`;
 }
 
@@ -212,11 +212,13 @@ function parseProperties(tsContent: string): ComponentInfo['properties'] {
 }
 
 function parseEvents(tsContent: string): ComponentInfo['events'] {
-  // Chercher dans les commentaires JSDoc @event
+  // Search in JSDoc comments @event
   const eventRegex = /\*\s*@event\s+(\w+)\s*-\s*(.+)/g;
   const events: ComponentInfo['events'] = [];
-  let match;
-  while ((match = eventRegex.exec(tsContent)) !== null) {
+  let match: RegExpExecArray | null;
+  while (true) {
+    match = eventRegex.exec(tsContent);
+    if (match === null) break;
     const name = match[1];
     const description = match[2];
     events.push({ name, description });
@@ -225,11 +227,13 @@ function parseEvents(tsContent: string): ComponentInfo['events'] {
 }
 
 function parseSlots(tsContent: string): ComponentInfo['slots'] {
-  // Chercher dans les commentaires JSDoc @slot
+  // Search in JSDoc comments @slot
   const slotRegex = /\*\s*@slot\s*(\w+)\s*-\s*(.+)/g;
   const slots: ComponentInfo['slots'] = [];
-  let match;
-  while ((match = slotRegex.exec(tsContent)) !== null) {
+  let match: RegExpExecArray | null;
+  while (true) {
+    match = slotRegex.exec(tsContent);
+    if (match === null) break;
     const name = match[1];
     const description = match[2];
     slots.push({ name, description });
@@ -238,11 +242,13 @@ function parseSlots(tsContent: string): ComponentInfo['slots'] {
 }
 
 function parseCssParts(tsContent: string): ComponentInfo['cssParts'] {
-  // Chercher dans les commentaires JSDoc @csspart
+  // Search in JSDoc comments @csspart
   const partRegex = /\*\s*@csspart\s*(\w+)\s*-\s*(.+)/g;
   const cssParts: ComponentInfo['cssParts'] = [];
-  let match;
-  while ((match = partRegex.exec(tsContent)) !== null) {
+  let match: RegExpExecArray | null;
+  while (true) {
+    match = partRegex.exec(tsContent);
+    if (match === null) break;
     const name = match[1];
     const description = match[2];
     cssParts.push({ name, description });
