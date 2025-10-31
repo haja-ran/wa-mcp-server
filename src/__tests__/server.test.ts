@@ -66,8 +66,8 @@ function httpPost(url: string, body: string, headers: Record<string, string> = {
   });
 }
 
-// Mock the MCP SDK to avoid ESM import issues in Jest
-jest.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
+// Mock the MCP SDK to avoid ESM import issues in Vitest
+vi.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
   Server: class MockServer {
     info: any;
     capabilities: any;
@@ -80,7 +80,7 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
   },
 }));
 
-jest.mock('@modelcontextprotocol/sdk/server/sse.js', () => ({
+vi.mock('@modelcontextprotocol/sdk/server/sse.js', () => ({
   SSEServerTransport: class MockTransport {
     endpoint: string;
     res: any;
@@ -94,7 +94,7 @@ jest.mock('@modelcontextprotocol/sdk/server/sse.js', () => ({
   },
 }));
 
-jest.mock('@modelcontextprotocol/sdk/types.js', () => ({
+vi.mock('@modelcontextprotocol/sdk/types.js', () => ({
   CallToolRequestSchema: {},
   ListToolsRequestSchema: {},
   ListResourcesRequestSchema: {},

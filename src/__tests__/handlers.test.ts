@@ -1,14 +1,5 @@
-// Mock function declarations
-const mockListComponentsHandler = jest.fn();
-const mockGenerateComponentCodeHandler = jest.fn();
-const mockGetComponentDocsHandler = jest.fn();
-const mockGetUsageGuideHandler = jest.fn();
-const mockThemeCustomizerHandler = jest.fn();
-const mockListUtilitiesHandler = jest.fn();
-const mockGetUtilityDocsHandler = jest.fn();
-
 // Mock the data imports
-jest.mock('../data/components.js', () => ({
+vi.mock('../data/components.js', () => ({
   components: [
     {
       tagName: 'wa-button',
@@ -23,7 +14,7 @@ jest.mock('../data/components.js', () => ({
   ],
 }));
 
-jest.mock('../data/utilities.js', () => ({
+vi.mock('../data/utilities.js', () => ({
   utilities: [
     {
       className: 'wa-theme',
@@ -33,74 +24,81 @@ jest.mock('../data/utilities.js', () => ({
   ],
 }));
 
-jest.mock('../tools/listComponents.js', () => ({
+vi.mock('../tools/listComponents.js', () => ({
   listComponentsTool: {
     name: 'listComponents',
     description: 'Lists components',
     inputSchema: {},
-    handler: mockListComponentsHandler,
+    handler: vi.fn(),
   },
 }));
 
-jest.mock('../tools/generateComponentCode.js', () => ({
+vi.mock('../tools/generateComponentCode.js', () => ({
   generateComponentCodeTool: {
     name: 'generateComponentCode',
     description: 'Generates component code',
     inputSchema: {},
-    handler: mockGenerateComponentCodeHandler,
+    handler: vi.fn(),
   },
 }));
 
-jest.mock('../tools/getComponentDocs.js', () => ({
+vi.mock('../tools/getComponentDocs.js', () => ({
   getComponentDocsTool: {
     name: 'getComponentDocs',
     description: 'Gets component docs',
     inputSchema: {},
-    handler: mockGetComponentDocsHandler,
+    handler: vi.fn(),
   },
 }));
 
-jest.mock('../tools/getUsageGuide.js', () => ({
+vi.mock('../tools/getUsageGuide.js', () => ({
   getUsageGuideTool: {
     name: 'getUsageGuide',
     description: 'Gets usage guide',
     inputSchema: {},
-    handler: mockGetUsageGuideHandler,
+    handler: vi.fn(),
   },
 }));
 
-jest.mock('../tools/themeCustomizer.js', () => ({
+vi.mock('../tools/themeCustomizer.js', () => ({
   themeCustomizerTool: {
     name: 'themeCustomizer',
     description: 'Customizes theme',
     inputSchema: {},
-    handler: mockThemeCustomizerHandler,
+    handler: vi.fn(),
   },
 }));
 
-jest.mock('../tools/listUtilities.js', () => ({
+vi.mock('../tools/listUtilities.js', () => ({
   listUtilitiesTool: {
     name: 'listUtilities',
     description: 'Lists utilities',
     inputSchema: {},
-    handler: mockListUtilitiesHandler,
+    handler: vi.fn(),
   },
 }));
 
-jest.mock('../tools/getUtilityDocs.js', () => ({
+vi.mock('../tools/getUtilityDocs.js', () => ({
   getUtilityDocsTool: {
     name: 'getUtilityDocs',
     description: 'Gets utility docs',
     inputSchema: {},
-    handler: mockGetUtilityDocsHandler,
+    handler: vi.fn(),
   },
 }));
 
 import { listToolsHandler, callToolHandler, listResourcesHandler, readResourceHandler } from '../handlers.js';
+import { listComponentsTool } from '../tools/listComponents.js';
+import { generateComponentCodeTool } from '../tools/generateComponentCode.js';
+import { getComponentDocsTool } from '../tools/getComponentDocs.js';
+import { getUsageGuideTool } from '../tools/getUsageGuide.js';
+import { themeCustomizerTool } from '../tools/themeCustomizer.js';
+import { listUtilitiesTool } from '../tools/listUtilities.js';
+import { getUtilityDocsTool } from '../tools/getUtilityDocs.js';
 
 describe('handlers', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('listToolsHandler', () => {
@@ -109,48 +107,13 @@ describe('handlers', () => {
 
       expect(result).toEqual({
         tools: [
-          {
-            name: 'listComponents',
-            description: 'Lists components',
-            inputSchema: {},
-            handler: mockListComponentsHandler,
-          },
-          {
-            name: 'generateComponentCode',
-            description: 'Generates component code',
-            inputSchema: {},
-            handler: mockGenerateComponentCodeHandler,
-          },
-          {
-            name: 'getComponentDocs',
-            description: 'Gets component docs',
-            inputSchema: {},
-            handler: mockGetComponentDocsHandler,
-          },
-          {
-            name: 'getUsageGuide',
-            description: 'Gets usage guide',
-            inputSchema: {},
-            handler: mockGetUsageGuideHandler,
-          },
-          {
-            name: 'themeCustomizer',
-            description: 'Customizes theme',
-            inputSchema: {},
-            handler: mockThemeCustomizerHandler,
-          },
-          {
-            name: 'listUtilities',
-            description: 'Lists utilities',
-            inputSchema: {},
-            handler: mockListUtilitiesHandler,
-          },
-          {
-            name: 'getUtilityDocs',
-            description: 'Gets utility docs',
-            inputSchema: {},
-            handler: mockGetUtilityDocsHandler,
-          },
+          listComponentsTool,
+          generateComponentCodeTool,
+          getComponentDocsTool,
+          getUsageGuideTool,
+          themeCustomizerTool,
+          listUtilitiesTool,
+          getUtilityDocsTool,
         ],
       });
     });
@@ -159,7 +122,7 @@ describe('handlers', () => {
   describe('callToolHandler', () => {
     it('calls listComponents tool handler', async () => {
       const mockResult = { components: [] };
-      mockListComponentsHandler.mockResolvedValue(mockResult);
+      (listComponentsTool.handler as any).mockResolvedValue(mockResult);
 
       const request = {
         params: {
@@ -170,13 +133,13 @@ describe('handlers', () => {
 
       const result = await callToolHandler(request);
 
-      expect(mockListComponentsHandler).toHaveBeenCalledWith({});
+      expect(listComponentsTool.handler).toHaveBeenCalledWith({});
       expect(result).toBe(mockResult);
     });
 
     it('calls generateComponentCode tool handler', async () => {
       const mockResult = { code: '<wa-button></wa-button>' };
-      mockGenerateComponentCodeHandler.mockResolvedValue(mockResult);
+      (generateComponentCodeTool.handler as any).mockResolvedValue(mockResult);
 
       const request = {
         params: {
@@ -187,7 +150,7 @@ describe('handlers', () => {
 
       const result = await callToolHandler(request);
 
-      expect(mockGenerateComponentCodeHandler).toHaveBeenCalledWith({ tagName: 'wa-button' });
+      expect(generateComponentCodeTool.handler).toHaveBeenCalledWith({ tagName: 'wa-button' });
       expect(result).toBe(mockResult);
     });
 

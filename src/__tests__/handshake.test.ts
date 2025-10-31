@@ -1,10 +1,10 @@
 import http from 'node:http'
 import { createApp } from '../index'
 
-jest.setTimeout(10000)
+// Timeout set in vitest.config.ts
 
-// Mock the MCP SDK to avoid ESM import issues in Jest
-jest.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
+// Mock the MCP SDK to avoid ESM import issues in Vitest
+vi.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
   Server: class MockServer {
     constructor(info: any, capabilities: any) {
       this.info = info
@@ -18,7 +18,7 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
   },
 }))
 
-jest.mock('@modelcontextprotocol/sdk/server/sse.js', () => ({
+vi.mock('@modelcontextprotocol/sdk/server/sse.js', () => ({
   SSEServerTransport: class MockTransport {
     constructor(endpoint: string, res: any) {
       this.endpoint = endpoint
@@ -32,7 +32,7 @@ jest.mock('@modelcontextprotocol/sdk/server/sse.js', () => ({
   },
 }))
 
-jest.mock('@modelcontextprotocol/sdk/types.js', () => ({
+vi.mock('@modelcontextprotocol/sdk/types.js', () => ({
   CallToolRequestSchema: {},
   ListToolsRequestSchema: {},
   ListResourcesRequestSchema: {},
