@@ -14,7 +14,21 @@ npm install
 npm run build
 ```
 
+## Testing
+
+```bash
+npm test
+```
+
 ## Running Locally
+
+For development with hot reloading and MCP inspector:
+
+```bash
+npm run dev
+```
+
+For production:
 
 ```bash
 npm start
@@ -96,8 +110,10 @@ sudo systemctl start wa-mcp-server
 
 ## API Endpoints
 
+- `GET /health` - Health check endpoint
 - `GET /sse` - Establishes SSE connection for MCP communication
-- `POST /message?sessionId=<id>` - Sends MCP messages
+- `POST /sse` - Sends MCP messages and handles handshake
+- `POST /message?sessionId=<id>` - Sends MCP messages via callback
 
 ## Available Tools
 

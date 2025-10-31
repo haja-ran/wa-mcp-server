@@ -1,42 +1,28 @@
 {
   "name": "wa-mcp-server",
   "version": "1.0.0",
-  "description": "MCP server for Web Awesome components",
-  "main": "dist/index.js",
-  "type": "module",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsx src/index.ts | npx @modelcontextprotocol/inspector",
-    "test": "vitest",
-    "lint": "eslint src/**/*.ts",
-    "fetch-data": "tsx scripts/fetch-components.ts",
-    "docker:build": "docker build -t wa-mcp-server .",
-    "docker:run": "docker run -p 3000:3000 wa-mcp-server"
+    "build": "npm run build --workspace=packages/mcp",
+    "start": "npm run start --workspace=packages/mcp",
+    "dev": "npm run dev --workspace=packages/mcp",
+    "test": "npm run test --workspace=packages/mcp",
+    "lint": "npm run lint --workspace=packages/mcp",
+    "fetch-data": "npm run fetch-data --workspace=packages/mcp",
+    "docker:run": "npm run docker:run --workspace=packages/mcp",
+    "docker:run": "npm run docker:run --workspace=packages"
   },
-  "keywords": [
-    "mcp",
-    "web-awesome",
-    "components"
-  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haja-ran/wa-mcp-server.git"
+  },
+  "keywords": [],
   "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.5.0",
-    "@types/express": "^5.0.5",
-    "express": "^5.1.0",
-    "gray-matter": "^4.0.3"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/haja-ran/wa-mcp-server/issues"
   },
-  "devDependencies": {
-    "@antfu/eslint-config": "^6.2.0",
-    "@types/get-port": "^4.0.1",
-    "@types/node": "^20.11.24",
-    "@types/node-fetch": "^2.6.13",
-    "eslint": "^9.38.0",
-    "get-port": "^7.1.0",
-    "node-fetch": "^2.7.0",
-    "tsx": "^4.7.1",
-    "typescript": "^5.3.3",
-    "vitest": "^4.0.6"
-  }
+  "homepage": "https://github.com/haja-ran/wa-mcp-server#readme",
+  "description": "",
+  "workspaces": ["packages/mcp"]
 }
