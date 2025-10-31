@@ -2,6 +2,18 @@
 
 A local Model Context Protocol (MCP) server for Web Awesome components, providing tools to explore, generate code, and customize UI components.
 
+## Usage
+
+The server runs locally using stdio transport for MCP communication.
+
+You can run the server directly using npx:
+
+```bash
+npx @sha-bang/wa-mcp
+```
+
+This will start the MCP server using stdio transport.
+
 ## Installation
 
 ```bash
@@ -33,18 +45,6 @@ For production:
 ```bash
 npm start
 ```
-
-The server runs locally using stdio transport for MCP communication.
-
-## Using as an Executable
-
-Once published, you can run the server directly using npx:
-
-```bash
-npx @sha-bang/wa-mcp
-```
-
-This will start the MCP server using stdio transport.
 
 ## Releases
 
