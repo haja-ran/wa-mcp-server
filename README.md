@@ -1,4 +1,3 @@
-wa-mcp-server/README.md
 # Web Awesome MCP Server Monorepo
 
 A **monorepo** containing tools and servers for integrating **Web Awesome** components with AI assistants and development workflows through the **Model Context Protocol (MCP)**.
