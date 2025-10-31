@@ -9,8 +9,7 @@
     "test": "npm run test --workspace=packages/mcp",
     "lint": "npm run lint --workspace=packages/mcp",
     "fetch-data": "npm run fetch-data --workspace=packages/mcp",
-    "docker:run": "npm run docker:run --workspace=packages/mcp",
-    "docker:run": "npm run docker:run --workspace=packages"
+    "docker:run": "npm run docker:run --workspace=packages/mcp"
   },
   "repository": {
     "type": "git",
