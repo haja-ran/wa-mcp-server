@@ -80,7 +80,7 @@ You can use this MCP server with VS Code through AI assistant extensions that su
    - Click "Edit Config" to open your MCP settings file
 
 3. **Add Web Awesome MCP Server**
-   
+
    Add the following configuration to your MCP settings file:
 
    ```json
@@ -103,7 +103,7 @@ You can use this MCP server with VS Code through AI assistant extensions that su
 Once configured, you can ask Cline to:
 
 - **List components**: "Show me all Web Awesome button components"
-- **Generate code**: "Create a Web Awesome button with variant='primary' and size='large'"
+- **Generate code**: "Create a Web Awesome button with variant='brand' and size='large'"
 - **Get documentation**: "What properties does the wa-alert component support?"
 - **Customize themes**: "Generate CSS for a dark theme with brand color #3b82f6"
 - **Explore utilities**: "What utility classes are available for spacing?"
@@ -117,7 +117,7 @@ Cline: *Uses the generateComponentCode tool to create:*
 <wa-card>
   <div slot="header">Card Title</div>
   <p>Card content goes here</p>
-  <wa-button slot="footer" variant="primary">Action</wa-button>
+  <wa-button slot="footer" variant="brand">Action</wa-button>
 </wa-card>
 ```
 
@@ -189,7 +189,7 @@ Once configured, you can use Zed's AI assistant to:
 Open the AI assistant panel (⌘+Shift+A on macOS) and try:
 
 ```
-"Create a Web Awesome button component with a primary variant"
+"Create a Web Awesome button component with a brand variant"
 "Show me the properties available for wa-dialog"
 "Generate a responsive card layout using Web Awesome components"
 ```
