@@ -8,8 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts | npx @modelcontextprotocol/inspector",
-    "test": "vitest",
-    "lint": "eslint src/**/*.ts",
+    "test": "vitest run",
+    "lint": "eslint src/**/*.ts --fix",
     "fetch-data": "tsx scripts/fetch-components.ts",
     "docker:build": "docker build -t wa-mcp-server .",
     "docker:run": "docker run -p 3000:3000 wa-mcp-server"

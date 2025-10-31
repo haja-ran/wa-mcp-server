@@ -1,4 +1,13 @@
 // Mock the data imports
+import { callToolHandler, listResourcesHandler, listToolsHandler, readResourceHandler } from '../handlers.js'
+import { generateComponentCodeTool } from '../tools/generateComponentCode.js'
+import { getComponentDocsTool } from '../tools/getComponentDocs.js'
+import { getUsageGuideTool } from '../tools/getUsageGuide.js'
+import { getUtilityDocsTool } from '../tools/getUtilityDocs.js'
+import { listComponentsTool } from '../tools/listComponents.js'
+import { listUtilitiesTool } from '../tools/listUtilities.js'
+import { themeCustomizerTool } from '../tools/themeCustomizer.js'
+
 vi.mock('../data/components.js', () => ({
   components: [
     {
@@ -12,7 +21,7 @@ vi.mock('../data/components.js', () => ({
       description: 'An input component',
     },
   ],
-}));
+}))
 
 vi.mock('../data/utilities.js', () => ({
   utilities: [
@@ -22,7 +31,7 @@ vi.mock('../data/utilities.js', () => ({
       description: 'A theme utility',
     },
   ],
-}));
+}))
 
 vi.mock('../tools/listComponents.js', () => ({
   listComponentsTool: {
@@ -31,7 +40,7 @@ vi.mock('../tools/listComponents.js', () => ({
     inputSchema: {},
     handler: vi.fn(),
   },
-}));
+}))
 
 vi.mock('../tools/generateComponentCode.js', () => ({
   generateComponentCodeTool: {
@@ -40,7 +49,7 @@ vi.mock('../tools/generateComponentCode.js', () => ({
     inputSchema: {},
     handler: vi.fn(),
   },
-}));
+}))
 
 vi.mock('../tools/getComponentDocs.js', () => ({
   getComponentDocsTool: {
@@ -49,7 +58,7 @@ vi.mock('../tools/getComponentDocs.js', () => ({
     inputSchema: {},
     handler: vi.fn(),
   },
-}));
+}))
 
 vi.mock('../tools/getUsageGuide.js', () => ({
   getUsageGuideTool: {
@@ -58,7 +67,7 @@ vi.mock('../tools/getUsageGuide.js', () => ({
     inputSchema: {},
     handler: vi.fn(),
   },
-}));
+}))
 
 vi.mock('../tools/themeCustomizer.js', () => ({
   themeCustomizerTool: {
@@ -67,7 +76,7 @@ vi.mock('../tools/themeCustomizer.js', () => ({
     inputSchema: {},
     handler: vi.fn(),
   },
-}));
+}))
 
 vi.mock('../tools/listUtilities.js', () => ({
   listUtilitiesTool: {
@@ -76,7 +85,7 @@ vi.mock('../tools/listUtilities.js', () => ({
     inputSchema: {},
     handler: vi.fn(),
   },
-}));
+}))
 
 vi.mock('../tools/getUtilityDocs.js', () => ({
   getUtilityDocsTool: {
@@ -85,25 +94,16 @@ vi.mock('../tools/getUtilityDocs.js', () => ({
     inputSchema: {},
     handler: vi.fn(),
   },
-}));
-
-import { listToolsHandler, callToolHandler, listResourcesHandler, readResourceHandler } from '../handlers.js';
-import { listComponentsTool } from '../tools/listComponents.js';
-import { generateComponentCodeTool } from '../tools/generateComponentCode.js';
-import { getComponentDocsTool } from '../tools/getComponentDocs.js';
-import { getUsageGuideTool } from '../tools/getUsageGuide.js';
-import { themeCustomizerTool } from '../tools/themeCustomizer.js';
-import { listUtilitiesTool } from '../tools/listUtilities.js';
-import { getUtilityDocsTool } from '../tools/getUtilityDocs.js';
+}))
 
 describe('handlers', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    vi.clearAllMocks()
+  })
 
   describe('listToolsHandler', () => {
     it('returns the list of available tools', async () => {
-      const result = await listToolsHandler();
+      const result = await listToolsHandler()
 
       expect(result).toEqual({
         tools: [
@@ -115,44 +115,44 @@ describe('handlers', () => {
           listUtilitiesTool,
           getUtilityDocsTool,
         ],
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('callToolHandler', () => {
     it('calls listComponents tool handler', async () => {
       const mockResult = { components: [] };
-      (listComponentsTool.handler as any).mockResolvedValue(mockResult);
+      (listComponentsTool.handler as any).mockResolvedValue(mockResult)
 
       const request = {
         params: {
           name: 'listComponents',
           arguments: {},
         },
-      };
+      }
 
-      const result = await callToolHandler(request);
+      const result = await callToolHandler(request)
 
-      expect(listComponentsTool.handler).toHaveBeenCalledWith({});
-      expect(result).toBe(mockResult);
-    });
+      expect(listComponentsTool.handler).toHaveBeenCalledWith({})
+      expect(result).toBe(mockResult)
+    })
 
     it('calls generateComponentCode tool handler', async () => {
       const mockResult = { code: '<wa-button></wa-button>' };
-      (generateComponentCodeTool.handler as any).mockResolvedValue(mockResult);
+      (generateComponentCodeTool.handler as any).mockResolvedValue(mockResult)
 
       const request = {
         params: {
           name: 'generateComponentCode',
           arguments: { tagName: 'wa-button' },
         },
-      };
+      }
 
-      const result = await callToolHandler(request);
+      const result = await callToolHandler(request)
 
-      expect(generateComponentCodeTool.handler).toHaveBeenCalledWith({ tagName: 'wa-button' });
-      expect(result).toBe(mockResult);
-    });
+      expect(generateComponentCodeTool.handler).toHaveBeenCalledWith({ tagName: 'wa-button' })
+      expect(result).toBe(mockResult)
+    })
 
     it('throws error for unknown tool', async () => {
       const request = {
@@ -160,15 +160,15 @@ describe('handlers', () => {
           name: 'unknownTool',
           arguments: {},
         },
-      };
+      }
 
-      await expect(callToolHandler(request)).rejects.toThrow('Unknown tool: unknownTool');
-    });
-  });
+      await expect(callToolHandler(request)).rejects.toThrow('Unknown tool: unknownTool')
+    })
+  })
 
   describe('listResourcesHandler', () => {
     it('returns resources for components and utilities', async () => {
-      const result = await listResourcesHandler();
+      const result = await listResourcesHandler()
 
       expect(result).toEqual({
         resources: [
@@ -191,9 +191,9 @@ describe('handlers', () => {
             mimeType: 'application/json',
           },
         ],
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('readResourceHandler', () => {
     it('reads a component resource', async () => {
@@ -201,9 +201,9 @@ describe('handlers', () => {
         params: {
           uri: 'wa://components/wa-button',
         },
-      };
+      }
 
-      const result = await readResourceHandler(request);
+      const result = await readResourceHandler(request)
 
       expect(result).toEqual({
         contents: [
@@ -217,17 +217,17 @@ describe('handlers', () => {
             }, null, 2),
           },
         ],
-      });
-    });
+      })
+    })
 
     it('reads a utility resource', async () => {
       const request = {
         params: {
           uri: 'wa://utilities/wa-theme',
         },
-      };
+      }
 
-      const result = await readResourceHandler(request);
+      const result = await readResourceHandler(request)
 
       expect(result).toEqual({
         contents: [
@@ -241,17 +241,17 @@ describe('handlers', () => {
             }, null, 2),
           },
         ],
-      });
-    });
+      })
+    })
 
     it('throws error for unknown resource', async () => {
       const request = {
         params: {
           uri: 'wa://components/unknown',
         },
-      };
+      }
 
-      await expect(readResourceHandler(request)).rejects.toThrow('Resource not found: wa://components/unknown');
-    });
-  });
-});
+      await expect(readResourceHandler(request)).rejects.toThrow('Resource not found: wa://components/unknown')
+    })
+  })
+})

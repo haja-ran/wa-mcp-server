@@ -1,38 +1,41 @@
-import http from 'node:http';
+import http from 'node:http'
+
+import { createApp, ready, setReady } from '../server.js'
 
 function httpGet(url: string) {
   return new Promise<{ status: number, bodyText: string, bodyJson?: any }>((resolve, reject) => {
-    const parsed = new URL(url);
+    const parsed = new URL(url)
     const opts: http.RequestOptions = {
       hostname: parsed.hostname,
       port: parsed.port,
       path: parsed.pathname + parsed.search,
       method: 'GET',
-    };
+    }
 
     const req = http.request(opts, (res) => {
-      const chunks: Buffer[] = [];
-      res.on('data', c => chunks.push(Buffer.from(c)));
+      const chunks: Buffer[] = []
+      res.on('data', c => chunks.push(Buffer.from(c)))
       res.on('end', () => {
-        const bodyText = Buffer.concat(chunks).toString('utf8');
-        let bodyJson: any;
+        const bodyText = Buffer.concat(chunks).toString('utf8')
+        let bodyJson: any
         try {
-          bodyJson = JSON.parse(bodyText);
-        } catch {
-          bodyJson = undefined;
+          bodyJson = JSON.parse(bodyText)
         }
-        resolve({ status: res.statusCode ?? 0, bodyText, bodyJson });
-      });
-    });
+        catch {
+          bodyJson = undefined
+        }
+        resolve({ status: res.statusCode ?? 0, bodyText, bodyJson })
+      })
+    })
 
-    req.on('error', (err) => reject(err));
-    req.end();
-  });
+    req.on('error', err => reject(err))
+    req.end()
+  })
 }
 
 function httpPost(url: string, body: string, headers: Record<string, string> = {}) {
   return new Promise<{ status: number, bodyText: string, bodyJson?: any }>((resolve, reject) => {
-    const parsed = new URL(url);
+    const parsed = new URL(url)
     const opts: http.RequestOptions = {
       hostname: parsed.hostname,
       port: parsed.port,
@@ -43,152 +46,150 @@ function httpPost(url: string, body: string, headers: Record<string, string> = {
         'Content-Length': Buffer.byteLength(body, 'utf8'),
         ...headers,
       },
-    };
+    }
 
     const req = http.request(opts, (res) => {
-      const chunks: Buffer[] = [];
-      res.on('data', c => chunks.push(Buffer.from(c)));
+      const chunks: Buffer[] = []
+      res.on('data', c => chunks.push(Buffer.from(c)))
       res.on('end', () => {
-        const bodyText = Buffer.concat(chunks).toString('utf8');
-        let bodyJson: any;
+        const bodyText = Buffer.concat(chunks).toString('utf8')
+        let bodyJson: any
         try {
-          bodyJson = JSON.parse(bodyText);
-        } catch {
-          bodyJson = undefined;
+          bodyJson = JSON.parse(bodyText)
         }
-        resolve({ status: res.statusCode ?? 0, bodyText, bodyJson });
-      });
-    });
+        catch {
+          bodyJson = undefined
+        }
+        resolve({ status: res.statusCode ?? 0, bodyText, bodyJson })
+      })
+    })
 
-    req.on('error', err => reject(err));
-    req.write(body);
-    req.end();
-  });
+    req.on('error', err => reject(err))
+    req.write(body)
+    req.end()
+  })
 }
 
 // Mock the MCP SDK to avoid ESM import issues in Vitest
 vi.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
   Server: class MockServer {
-    info: any;
-    capabilities: any;
+    info: any
+    capabilities: any
     constructor(info: any, capabilities: any) {
-      this.info = info;
-      this.capabilities = capabilities;
+      this.info = info
+      this.capabilities = capabilities
     }
+
     setRequestHandler() {}
     connect() {}
   },
-}));
+}))
 
 vi.mock('@modelcontextprotocol/sdk/server/sse.js', () => ({
   SSEServerTransport: class MockTransport {
-    endpoint: string;
-    res: any;
-    sessionId: string;
+    endpoint: string
+    res: any
+    sessionId: string
     constructor(endpoint: string, res: any) {
-      this.endpoint = endpoint;
-      this.res = res;
-      this.sessionId = `mock-session-${Math.random().toString(36).substr(2, 9)}`;
+      this.endpoint = endpoint
+      this.res = res
+      this.sessionId = `mock-session-${Math.random().toString(36).substr(2, 9)}`
     }
+
     start() {}
   },
-}));
+}))
 
 vi.mock('@modelcontextprotocol/sdk/types.js', () => ({
   CallToolRequestSchema: {},
   ListToolsRequestSchema: {},
   ListResourcesRequestSchema: {},
   ReadResourceRequestSchema: {},
-}));
-
-import { createApp, ready, setReady } from '../server.js';
+}))
 
 describe('server', () => {
-  let server: http.Server;
-  let baseUrl: string;
+  let server: http.Server
+  let baseUrl: string
 
   beforeEach(async () => {
-    setReady(false);
-    const { app } = createApp();
-    server = http.createServer(app);
+    setReady(false)
+    const { app } = createApp()
+    server = http.createServer(app)
     await new Promise<void>((resolve, reject) => {
-      server.listen(0, () => resolve());
-      server.on('error', reject);
-    });
-    const addr = server.address();
+      server.listen(0, () => resolve())
+      server.on('error', reject)
+    })
+    const addr = server.address()
     if (!addr || typeof addr === 'string') {
-      throw new Error('Failed to start test http server');
+      throw new Error('Failed to start test http server')
     }
-    const port = addr.port;
-    baseUrl = `http://127.0.0.1:${port}`;
-  });
+    const port = addr.port
+    baseUrl = `http://127.0.0.1:${port}`
+  })
 
   afterEach(async () => {
     await new Promise<void>((resolve, reject) => {
-      server.close(err => (err ? reject(err) : resolve()));
-    });
-  });
+      server.close(err => (err ? reject(err) : resolve()))
+    })
+  })
 
   describe('createApp', () => {
     it('returns an object with app and servers', () => {
-      const result = createApp();
+      const result = createApp()
 
-      expect(result).toHaveProperty('app');
-      expect(result).toHaveProperty('servers');
-      expect(result.servers).toBeInstanceOf(Map);
-      expect(typeof result.app).toBe('function'); // Express app
-    });
+      expect(result).toHaveProperty('app')
+      expect(result).toHaveProperty('servers')
+      expect(result.servers).toBeInstanceOf(Map)
+      expect(typeof result.app).toBe('function') // Express app
+    })
 
     it('app has health endpoint', async () => {
-      const response = await httpGet(`${baseUrl}/health`);
+      const response = await httpGet(`${baseUrl}/health`)
 
-      expect(response.status).toBe(503); // Since ready is false
-      expect(response.bodyJson).toHaveProperty('status', 'starting');
-      expect(response.bodyJson).toHaveProperty('ready', false);
-      expect(response.bodyJson).toHaveProperty('uptimeMs');
-      expect(response.bodyJson).toHaveProperty('connections', 0);
-    });
+      expect(response.status).toBe(503) // Since ready is false
+      expect(response.bodyJson).toHaveProperty('status', 'starting')
+      expect(response.bodyJson).toHaveProperty('ready', false)
+      expect(response.bodyJson).toHaveProperty('uptimeMs')
+      expect(response.bodyJson).toHaveProperty('connections', 0)
+    })
 
     it('health endpoint returns ok when ready', async () => {
-      setReady(true);
-      const response = await httpGet(`${baseUrl}/health`);
+      setReady(true)
+      const response = await httpGet(`${baseUrl}/health`)
 
-      expect(response.status).toBe(200);
-      expect(response.bodyJson).toHaveProperty('status', 'ok');
-      expect(response.bodyJson).toHaveProperty('ready', true);
-    });
-
-
+      expect(response.status).toBe(200)
+      expect(response.bodyJson).toHaveProperty('status', 'ok')
+      expect(response.bodyJson).toHaveProperty('ready', true)
+    })
 
     it('app has POST /sse endpoint', async () => {
-      const response = await httpPost(`${baseUrl}/sse`, JSON.stringify({ method: 'initialize', id: 1 }));
+      const response = await httpPost(`${baseUrl}/sse`, JSON.stringify({ method: 'initialize', id: 1 }))
 
       // Should handle the request
-      expect([200, 500]).toContain(response.status);
-    });
+      expect([200, 500]).toContain(response.status)
+    })
 
     it('app has POST /message endpoint', async () => {
-      const response = await httpPost(`${baseUrl}/message?sessionId=test`, JSON.stringify({}));
+      const response = await httpPost(`${baseUrl}/message?sessionId=test`, JSON.stringify({}))
 
-      expect(response.status).toBe(404); // No server for sessionId
-    });
-  });
+      expect(response.status).toBe(404) // No server for sessionId
+    })
+  })
 
   describe('ready state', () => {
     it('ready is initially false', () => {
-      expect(ready).toBe(false);
-    });
+      expect(ready).toBe(false)
+    })
 
     it('setReady sets ready to true', () => {
-      setReady(true);
-      expect(ready).toBe(true);
-    });
+      setReady(true)
+      expect(ready).toBe(true)
+    })
 
     it('setReady sets ready to false', () => {
-      setReady(true);
-      setReady(false);
-      expect(ready).toBe(false);
-    });
-  });
-});
-
+      setReady(true)
+      setReady(false)
+      expect(ready).toBe(false)
+    })
+  })
+})
