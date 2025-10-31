@@ -1,4 +1,4 @@
-// wa-mcp-server/packages/mcp/src/__tests__/server.test.ts
+// wa-mcp/packages/mcp/src/__tests__/server.test.ts
 import { createServer } from '../index.js';
 
 // Mock the MCP SDK to avoid ESM import issues in Vitest

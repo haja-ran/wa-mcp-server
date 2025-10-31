@@ -13,7 +13,7 @@ The core **Model Context Protocol (MCP) server** that provides AI assistants wit
 
 **Key Features:**
 - 🔍 **Component Discovery** - List and explore Web Awesome components
-- 🛠️ **Code Generation** - Generate ready-to-use HTML for components  
+- 🛠️ **Code Generation** - Generate ready-to-use HTML for components
 - 📚 **Documentation Access** - Retrieve detailed component docs
 - 🎨 **Theme Customization** - Generate CSS variables for theming
 - 🧰 **Utility Classes** - Access Web Awesome utility documentation
@@ -39,8 +39,8 @@ npx @sha-bang/wa-mcp
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/haja-ran/wa-mcp-server.git
-cd wa-mcp-server
+git clone https://github.com/haja-ran/wa-mcp.git .
+cd wa-mcp
 npm install
 ```
 
@@ -62,7 +62,7 @@ npm run dev
 ## 🏗️ Project Structure
 
 ```
-wa-mcp-server/
+wa-mcp/
 ├── packages/
 │   └── mcp/                    # MCP Server package
 │       ├── src/                # Source code
@@ -87,7 +87,7 @@ This project uses **Conventional Commits** for automated versioning:
 # Feature commits
 git commit -m "feat: add new component tool"
 
-# Bug fixes  
+# Bug fixes
 git commit -m "fix: resolve memory leak in server"
 
 # Breaking changes
@@ -100,7 +100,7 @@ BREAKING CHANGE: remove deprecated methods"
 Releases are **automatically managed** by [semantic-release](https://github.com/semantic-release/semantic-release):
 
 - **Patch releases** (`1.0.0` → `1.0.1`) for bug fixes
-- **Minor releases** (`1.0.0` → `1.1.0`) for new features  
+- **Minor releases** (`1.0.0` → `1.1.0`) for new features
 - **Major releases** (`1.0.0` → `2.0.0`) for breaking changes
 
 Pushing to `main` triggers automated releases via GitHub Actions.
@@ -114,7 +114,7 @@ We welcome contributions! Please see the [MCP Server README](./packages/mcp/READ
 ### Quick Setup for Contributors
 
 1. **Fork** the repository
-2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/wa-mcp-server.git`
+2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/wa-mcp.git`
 3. **Create a feature branch**: `git checkout -b feature/your-feature`
 4. **Make changes** and ensure tests pass: `npm test`
 5. **Commit** using conventional format: `git commit -m "feat: your feature description"`
@@ -133,4 +133,4 @@ This project is licensed under the **MIT License**. See individual package licen
 - [**Web Awesome**](https://webawesome.com/) - The component library this server integrates with
 - [**Model Context Protocol**](https://modelcontextprotocol.io/) - The protocol powering AI integrations
 - [**Semantic Release**](https://github.com/semantic-release/semantic-release) - Automated versioning
-- [**GitHub Repository**](https://github.com/haja-ran/wa-mcp-server)
+- [**GitHub Repository**](https://github.com/haja-ran/wa-mcp)

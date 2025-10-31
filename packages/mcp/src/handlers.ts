@@ -1,4 +1,4 @@
-// wa-mcp-server/src/handlers.ts
+// wa-mcp/src/handlers.ts
 import { components } from './data/components.js';
 import { utilities } from './data/utilities.js';
 import { generateComponentCodeTool } from './tools/generateComponentCode.js';

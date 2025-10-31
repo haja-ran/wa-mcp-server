@@ -192,7 +192,7 @@ export function buildHandshakeResult(opts: {
     protocolVersion,
     capabilities,
     serverInfo: {
-      name: opts.serverName ?? 'wa-mcp-server',
+      name: opts.serverName ?? 'wa-mcp',
       version: opts.serverVersion ?? '1.0.0',
     },
   }

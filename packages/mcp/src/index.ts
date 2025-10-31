@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// wa-mcp-server/src/index.ts
+// wa-mcp/src/index.ts
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -40,7 +40,7 @@ export async function createServer() {
 
   const server = new Server(
     {
-      name: 'wa-mcp-server',
+      name: 'wa-mcp',
       version: '1.0.0',
     },
     {
