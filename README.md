@@ -3,6 +3,8 @@
    <img width="180" height="135" alt="wa-mcp" style="margin: auto; display: inline-block;" src="https://github.com/user-attachments/assets/880b429a-2641-4e32-81f2-22bd68e7bd27" />
 </div>
 
+<br />
+
 A **monorepo** containing tools and servers for integrating **Web Awesome** components with AI assistants and development workflows through the **Model Context Protocol (MCP)**.
 
 ---
@@ -10,6 +12,7 @@ A **monorepo** containing tools and servers for integrating **Web Awesome** comp
 ## 📦 Packages
 
 ### [@sha-bang/wa-mcp](./packages/mcp/) - MCP Server
+
 [![npm version](https://badge.fury.io/js/%40sha-bang%2Fwa-mcp.svg)](https://badge.fury.io/js/%40sha-bang%2Fwa-mcp)
 
 The core **Model Context Protocol (MCP) server** that provides AI assistants with access to Web Awesome components and utilities.
@@ -21,10 +24,12 @@ The core **Model Context Protocol (MCP) server** that provides AI assistants wit
 - 🎨 **Theme Customization** - Generate CSS variables for theming
 - 🧰 **Utility Classes** - Access Web Awesome utility documentation
 
-**Quick Start:**
+**Quick Start**
 ```bash
 npx @sha-bang/wa-mcp
 ```
+
+**Demo**
 
 https://github.com/user-attachments/assets/968ccaab-7656-4d43-b1eb-32d16dc3e101
 
