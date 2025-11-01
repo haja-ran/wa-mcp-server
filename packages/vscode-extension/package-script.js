@@ -3,11 +3,40 @@ const path = require('path');
 const { execSync } = require('child_process');
 const os = require('os');
 
+// Sync version with MCP package
+function syncVersion() {
+  const mcpPackagePath = path.join(__dirname, '..', 'mcp', 'package.json');
+  const extensionPackagePath = path.join(__dirname, 'package.json');
+
+  if (!fs.existsSync(mcpPackagePath)) {
+    console.warn('Warning: MCP package.json not found, skipping version sync');
+    return;
+  }
+
+  try {
+    const mcpPackage = JSON.parse(fs.readFileSync(mcpPackagePath, 'utf8'));
+    const extensionPackage = JSON.parse(fs.readFileSync(extensionPackagePath, 'utf8'));
+
+    if (mcpPackage.version !== extensionPackage.version) {
+      console.log(`Syncing version from ${extensionPackage.version} to ${mcpPackage.version}`);
+      extensionPackage.version = mcpPackage.version;
+      fs.writeFileSync(extensionPackagePath, JSON.stringify(extensionPackage, null, 2));
+    } else {
+      console.log(`Version already in sync: ${mcpPackage.version}`);
+    }
+  } catch (error) {
+    console.warn('Warning: Failed to sync version:', error.message);
+  }
+}
+
 // Create temp directory
 const tempDir = path.join(os.tmpdir(), 'vscode-extension-package-' + Date.now());
 fs.mkdirSync(tempDir, { recursive: true });
 
 console.log(`Packaging in temp directory: ${tempDir}`);
+
+// Sync version before packaging
+syncVersion();
 
 // Files to copy
 const filesToCopy = [
