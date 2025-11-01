@@ -5,7 +5,7 @@ describe('getComponentDocsTool', () => {
     const result = await (getComponentDocsTool as any).handler({ tagName: 'wa-button' });
     const content = JSON.parse(result.content[0].text);
     expect(content.tagName).toBe('wa-button');
-    expect(content.name).toBe('Button');
+    expect(content.name).toBe('Button | Web Awesome');
     expect(content.properties).toBeDefined();
   });
 
