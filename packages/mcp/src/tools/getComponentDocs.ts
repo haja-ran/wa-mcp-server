@@ -31,6 +31,7 @@ getComponentDocsTool.handler = async (args: { tagName: string }) => {
     events: component.events,
     slots: component.slots,
     cssParts: component.cssParts,
+    cssVariables: component.cssVariables,
   }
 
   return {

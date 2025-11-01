@@ -22,14 +22,19 @@ export interface ComponentInfo {
     name: string
     description: string
   }>
+  cssVariables: Array<{
+    name: string
+    description: string
+    default?: string
+  }>
 }
 
 export const components: ComponentInfo[] = [
   {
     tagName: 'wa-animated-image',
-    name: 'Animated Image',
+    name: 'Animated Image | Web Awesome',
     description: 'A component for displaying animated GIFs and WEBPs that play and pause on interaction.',
-    category: 'Imagery',
+    category: 'Components',
     properties: [
       {
         name: 'play',
@@ -63,12 +68,13 @@ export const components: ComponentInfo[] = [
         description: 'box - The container that surrounds the pause/play icons and provides their background.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-animation',
-    name: 'Animation',
+    name: 'Animation | Web Awesome',
     description: 'Animate elements declaratively with nearly 100 baked-in presets, or roll your own with custom keyframes.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'play',
@@ -129,12 +135,13 @@ export const components: ComponentInfo[] = [
     ],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-avatar',
-    name: 'Avatar',
+    name: 'Avatar | Web Awesome',
     description: 'Avatars are used to represent a person or object.',
-    category: 'Imagery',
+    category: 'Components',
     properties: [
       {
         name: 'shape',
@@ -169,12 +176,13 @@ export const components: ComponentInfo[] = [
         description: 'The avatar image. Only shown when the `image` attribute is set.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-badge',
-    name: 'Badge',
+    name: 'Badge | Web Awesome',
     description: 'Badges are used to draw attention and display statuses or counts.',
-    category: 'Feedback & Status',
+    category: 'Components',
     properties: [
       {
         name: 'variant',
@@ -209,12 +217,13 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-breadcrumb-item',
-    name: 'Breadcrumb Item',
+    name: 'Breadcrumb Item | Web Awesome',
     description: 'Breadcrumb Items are used inside breadcrumbs to represent different links.',
-    category: 'Navigation',
+    category: 'Components',
     properties: [],
     events: [],
     slots: [
@@ -249,12 +258,13 @@ export const components: ComponentInfo[] = [
         description: 'The container that wraps the separator.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-breadcrumb',
-    name: 'Breadcrumb',
+    name: 'Breadcrumb | Web Awesome',
     description: 'Breadcrumbs provide a group of links so users can easily navigate a website\'s hierarchy.',
-    category: 'Navigation',
+    category: 'Components',
     properties: [],
     events: [],
     slots: [
@@ -269,12 +279,13 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-button-group',
-    name: 'Button Group',
+    name: 'Button Group | Web Awesome',
     description: 'Button groups can be used to group related buttons into sections.',
-    category: 'Actions',
+    category: 'Components',
     properties: [
       {
         name: 'orientation',
@@ -291,12 +302,13 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-button',
-    name: 'Button',
+    name: 'Button | Web Awesome',
     description: 'Buttons represent actions that are available to the user.',
-    category: 'Actions',
+    category: 'Components',
     properties: [
       {
         name: 'variant',
@@ -432,12 +444,13 @@ export const components: ComponentInfo[] = [
         description: 'The spinner that shows when the button is in the loading state.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-callout',
-    name: 'Callout',
+    name: 'Callout | Web Awesome',
     description: 'Callouts are used to display important messages inline.',
-    category: 'Feedback & Status',
+    category: 'Components',
     properties: [
       {
         name: 'variant',
@@ -474,12 +487,13 @@ export const components: ComponentInfo[] = [
         description: 'The container that wraps the callout\'s main content.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-card',
-    name: 'Card',
+    name: 'Card | Web Awesome',
     description: 'Cards can be used to group related subjects in a container.',
-    category: 'Organization',
+    category: 'Components',
     properties: [
       {
         name: 'withHeader',
@@ -545,22 +559,30 @@ export const components: ComponentInfo[] = [
         description: 'The container that wraps the card\'s footer.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--spacing',
+        description: 'The amount of space around and between sections of the card. Expects a single value.',
+        default: 'var(--wa-space-l)',
+      },
+    ],
   },
   {
     tagName: 'wa-carousel-item',
-    name: 'Carousel Item',
+    name: 'Carousel Item | Web Awesome',
     description: 'A carousel item represent a slide within a carousel.',
-    category: 'Imagery',
+    category: 'Components',
     properties: [],
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-carousel',
-    name: 'Carousel',
+    name: 'Carousel | Web Awesome',
     description: 'Carousels display an arbitrary number of content slides along a horizontal or vertical axis.',
-    category: 'Imagery',
+    category: 'Components',
     properties: [
       {
         name: 'loop',
@@ -672,12 +694,24 @@ export const components: ComponentInfo[] = [
         description: 'button-next - Applied to the next button.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--aspect-ratio',
+        description: 'The aspect ratio of each slide.',
+        default: '16/9',
+      },
+      {
+        name: '--slide-gap',
+        description: 'The space between each slide.',
+        default: 'var(--wa-space-m)',
+      },
+    ],
   },
   {
     tagName: 'wa-checkbox',
-    name: 'Checkbox',
+    name: 'Checkbox | Web Awesome',
     description: 'Checkboxes allow the user to toggle an option on or off.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'name',
@@ -776,12 +810,13 @@ export const components: ComponentInfo[] = [
         description: 'The hint\'s wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-color-picker',
-    name: 'Color Picker',
+    name: 'Color Picker | Web Awesome',
     description: 'Color pickers allow the user to select a color.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'defaultValue',
@@ -1000,12 +1035,13 @@ export const components: ComponentInfo[] = [
         description: 'button__caret - The format button\'s exported `caret` part.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-comparison',
-    name: 'Comparison',
+    name: 'Comparison | Web Awesome',
     description: 'Compare visual differences between similar content with a sliding panel.',
-    category: 'Imagery',
+    category: 'Components',
     properties: [
       {
         name: 'position',
@@ -1056,12 +1092,13 @@ export const components: ComponentInfo[] = [
         description: 'The handle that the user drags to expose the after content.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-copy-button',
-    name: 'Copy Button',
+    name: 'Copy Button | Web Awesome',
     description: 'Copies data to the clipboard when the user clicks the button.',
-    category: 'Actions',
+    category: 'Components',
     properties: [
       {
         name: 'disabled',
@@ -1158,12 +1195,13 @@ export const components: ComponentInfo[] = [
         description: 'The tooltip\'s exported `body` part.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-details',
-    name: 'Details',
+    name: 'Details | Web Awesome',
     description: 'Details show a brief summary and expand to show additional content.',
-    category: 'Organization',
+    category: 'Components',
     properties: [
       {
         name: 'open',
@@ -1249,12 +1287,24 @@ export const components: ComponentInfo[] = [
         description: 'The details content.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--show-duration',
+        description: 'The show duration to use when applying built-in animation classes.',
+        default: '200ms',
+      },
+      {
+        name: '--hide-duration',
+        description: 'The hide duration to use when applying built-in animation classes.',
+        default: '200ms',
+      },
+    ],
   },
   {
     tagName: 'wa-dialog',
-    name: 'Dialog',
+    name: 'Dialog | Web Awesome',
     description: 'Dialogs, sometimes called "modals", appear above the page and require the user\'s immediate attention.',
-    category: 'Organization',
+    category: 'Components',
     properties: [
       {
         name: 'open',
@@ -1343,12 +1393,24 @@ export const components: ComponentInfo[] = [
         description: 'The dialog\'s footer.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--show-duration',
+        description: 'The animation duration when showing the dialog.',
+        default: '200ms',
+      },
+      {
+        name: '--hide-duration',
+        description: 'The animation duration when hiding the dialog.',
+        default: '200ms',
+      },
+    ],
   },
   {
     tagName: 'wa-divider',
-    name: 'Divider',
+    name: 'Divider | Web Awesome',
     description: 'Dividers are used to visually separate or group elements.',
-    category: 'Organization',
+    category: 'Components',
     properties: [
       {
         name: 'orientation',
@@ -1360,12 +1422,13 @@ export const components: ComponentInfo[] = [
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-drawer',
-    name: 'Drawer',
+    name: 'Drawer | Web Awesome',
     description: 'Drawers slide in from a container to expose additional options and information.',
-    category: 'Organization',
+    category: 'Components',
     properties: [
       {
         name: 'open',
@@ -1464,12 +1527,24 @@ export const components: ComponentInfo[] = [
         description: 'The drawer\'s footer.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--show-duration',
+        description: 'The animation duration when showing the drawer.',
+        default: '200ms',
+      },
+      {
+        name: '--hide-duration',
+        description: 'The animation duration when hiding the drawer.',
+        default: '200ms',
+      },
+    ],
   },
   {
     tagName: 'wa-dropdown-item',
-    name: 'Dropdown Item',
+    name: 'Dropdown Item | Web Awesome',
     description: 'Description of component.',
-    category: 'Actions',
+    category: 'Components',
     properties: [
       {
         name: 'active',
@@ -1576,12 +1651,13 @@ export const components: ComponentInfo[] = [
         description: 'The submenu container.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-dropdown',
-    name: 'Dropdown',
+    name: 'Dropdown | Web Awesome',
     description: 'Dropdowns expose additional content that "drops down" in a panel.',
-    category: 'Actions',
+    category: 'Components',
     properties: [
       {
         name: 'open',
@@ -1646,12 +1722,13 @@ export const components: ComponentInfo[] = [
         description: 'The dropdown menu container.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-format-bytes',
-    name: 'Format Bytes',
+    name: 'Format Bytes | Web Awesome',
     description: 'Formats a number as a human readable bytes value.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'value',
@@ -1663,12 +1740,13 @@ export const components: ComponentInfo[] = [
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-format-date',
-    name: 'Format Date',
+    name: 'Format Date | Web Awesome',
     description: 'Formats a date/time using the specified locale and options.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'timeZoneName',
@@ -1690,12 +1768,13 @@ export const components: ComponentInfo[] = [
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-format-number',
-    name: 'Format Number',
+    name: 'Format Number | Web Awesome',
     description: 'Formats a number using the specified locale and options.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'value',
@@ -1744,12 +1823,13 @@ export const components: ComponentInfo[] = [
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-icon',
-    name: 'Icon',
+    name: 'Icon | Web Awesome',
     description: 'Icons are symbols that can be used to represent various options within an application.',
-    category: 'Imagery',
+    category: 'Components',
     properties: [
       {
         name: 'family',
@@ -1801,12 +1881,34 @@ export const components: ComponentInfo[] = [
         description: 'The `<use>` element generated when using `spriteSheet: true`',
       },
     ],
+    cssVariables: [
+      {
+        name: '--primary-color',
+        description: 'Sets a duotone icon\'s primary color.',
+        default: 'currentColor',
+      },
+      {
+        name: '--primary-opacity',
+        description: 'Sets a duotone icon\'s primary opacity.',
+        default: '1',
+      },
+      {
+        name: '--secondary-color',
+        description: 'Sets a duotone icon\'s secondary color.',
+        default: 'currentColor',
+      },
+      {
+        name: '--secondary-opacity',
+        description: 'Sets a duotone icon\'s secondary opacity.',
+        default: '0.4',
+      },
+    ],
   },
   {
     tagName: 'wa-include',
-    name: 'Include',
+    name: 'Include | Web Awesome',
     description: 'Includes give you the power to embed external HTML files into the page.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'allowScripts',
@@ -1823,12 +1925,13 @@ export const components: ComponentInfo[] = [
     ],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-input',
-    name: 'Input',
+    name: 'Input | Web Awesome',
     description: 'Inputs collect data from the user.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'defaultValue',
@@ -2020,12 +2123,13 @@ export const components: ComponentInfo[] = [
         description: 'The container that wraps the `end` slot.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-intersection-observer',
-    name: 'Intersection Observer',
+    name: 'Intersection Observer | Web Awesome',
     description: 'Tracks immediate child elements and fires events as they move in and out of view.',
-    category: 'Other',
+    category: 'Components',
     properties: [
       {
         name: 'rootMargin',
@@ -2055,12 +2159,13 @@ export const components: ComponentInfo[] = [
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-mutation-observer',
-    name: 'Mutation Observer',
+    name: 'Mutation Observer | Web Awesome',
     description: 'The Mutation Observer component offers a thin, declarative interface to the MutationObserver API.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'attr',
@@ -2101,12 +2206,13 @@ export const components: ComponentInfo[] = [
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-option',
-    name: 'Option',
+    name: 'Option | Web Awesome',
     description: 'Options define the selectable items within various form controls such as select.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'value',
@@ -2162,12 +2268,13 @@ export const components: ComponentInfo[] = [
         description: 'The container that wraps the `end` slot.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-popover',
-    name: 'Popover',
+    name: 'Popover | Web Awesome',
     description: 'Popovers display interactive content when their anchor element is clicked.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'open',
@@ -2235,12 +2342,34 @@ export const components: ComponentInfo[] = [
         description: 'The popup\'s exported `arrow` part. Use this to target the popover\'s arrow.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--arrow-size',
+        description: 'The size of the tiny arrow that points to the popover (set to zero to remove).',
+        default: '0.375rem',
+      },
+      {
+        name: '--max-width',
+        description: 'The maximum width of the popover\'s body content.',
+        default: '25rem',
+      },
+      {
+        name: '--show-duration',
+        description: 'The speed of the show animation.',
+        default: '100ms',
+      },
+      {
+        name: '--hide-duration',
+        description: 'The speed of the hide animation.',
+        default: '100ms',
+      },
+    ],
   },
   {
     tagName: 'wa-popup',
-    name: 'Popup',
+    name: 'Popup | Web Awesome',
     description: 'Popup is a utility that lets you declaratively anchor "popup" containers to another element.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'active',
@@ -2367,12 +2496,42 @@ export const components: ComponentInfo[] = [
         description: 'bridge - The hover bridge element. Only available when the `hover-bridge` option is enabled.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--arrow-size',
+        description: 'The size of the arrow. Note that an arrow won\'t be shown unless the `arrow`',
+        default: '6px',
+      },
+      {
+        name: '--arrow-color',
+        description: 'The color of the arrow.',
+        default: 'black',
+      },
+      {
+        name: '--auto-size-available-width',
+        description: 'A read-only custom property that determines the amount of width the',
+      },
+      {
+        name: '--auto-size-available-height',
+        description: 'A read-only custom property that determines the amount of height the',
+      },
+      {
+        name: '--show-duration',
+        description: 'The show duration to use when applying built-in animation classes.',
+        default: '100ms',
+      },
+      {
+        name: '--hide-duration',
+        description: 'The hide duration to use when applying built-in animation classes.',
+        default: '100ms',
+      },
+    ],
   },
   {
     tagName: 'wa-progress-bar',
-    name: 'Progress Bar',
+    name: 'Progress Bar | Web Awesome',
     description: 'Progress bars are used to show the status of an ongoing operation.',
-    category: 'Feedback & Status',
+    category: 'Components',
     properties: [
       {
         name: 'value',
@@ -2403,12 +2562,29 @@ export const components: ComponentInfo[] = [
         description: 'The progress bar\'s label.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--track-height',
+        description: 'The color of the track.',
+        default: '1rem',
+      },
+      {
+        name: '--track-color',
+        description: 'The color of the track.',
+        default: 'var(--wa-color-neutral-fill-normal)',
+      },
+      {
+        name: '--indicator-color',
+        description: 'The color of the indicator.',
+        default: 'var(--wa-color-brand-fill-loud)',
+      },
+    ],
   },
   {
     tagName: 'wa-progress-ring',
-    name: 'Progress Ring',
+    name: 'Progress Ring | Web Awesome',
     description: 'Progress rings are used to show the progress of a determinate operation in a circular fashion.',
-    category: 'Feedback & Status',
+    category: 'Components',
     properties: [
       {
         name: 'value',
@@ -2429,12 +2605,13 @@ export const components: ComponentInfo[] = [
         description: 'The progress ring label.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-qr-code',
-    name: 'QR Code',
+    name: 'QR Code | Web Awesome',
     description: 'Generates a QR code and renders it using the Canvas API.',
-    category: 'Actions',
+    category: 'Components',
     properties: [
       {
         name: 'size',
@@ -2463,12 +2640,13 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-radio-group',
-    name: 'Radio Group',
+    name: 'Radio Group | Web Awesome',
     description: 'Radio groups are used to group multiple radios so they function as a single form control.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'hint',
@@ -2571,12 +2749,13 @@ export const components: ComponentInfo[] = [
         description: 'The hint\'s wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-radio',
-    name: 'Radio',
+    name: 'Radio | Web Awesome',
     description: 'Radios allow the user to select a single option from a group.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'form',
@@ -2633,12 +2812,13 @@ export const components: ComponentInfo[] = [
         description: 'The container that wraps the radio\'s label.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-rating',
-    name: 'Rating',
+    name: 'Rating | Web Awesome',
     description: 'Ratings give users a way to quickly view and provide feedback.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'value',
@@ -2690,12 +2870,13 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-relative-time',
-    name: 'Relative Time',
+    name: 'Relative Time | Web Awesome',
     description: 'Outputs a localized time phrase relative to the current date and time.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'sync',
@@ -2707,12 +2888,13 @@ export const components: ComponentInfo[] = [
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-resize-observer',
-    name: 'Resize Observer',
+    name: 'Resize Observer | Web Awesome',
     description: 'The Resize Observer component offers a thin, declarative interface to the ResizeObserver API.',
-    category: 'Utilities',
+    category: 'Components',
     properties: [
       {
         name: 'disabled',
@@ -2724,12 +2906,13 @@ export const components: ComponentInfo[] = [
     events: [],
     slots: [],
     cssParts: [],
+    cssVariables: [],
   },
   {
     tagName: 'wa-scroller',
-    name: 'Scroller',
+    name: 'Scroller | Web Awesome',
     description: 'Scrollers create an accessible container while providing visual cues that help users identify and navigate through content that scrolls.',
-    category: 'Organization',
+    category: 'Components',
     properties: [
       {
         name: 'orientation',
@@ -2758,12 +2941,24 @@ export const components: ComponentInfo[] = [
         description: 'The container that wraps the slotted content.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--shadow-color',
+        description: 'The base color of the shadow.',
+        default: 'var(--wa-color-surface-default)',
+      },
+      {
+        name: '--shadow-size',
+        description: 'The size of the shadow.',
+        default: '2rem',
+      },
+    ],
   },
   {
     tagName: 'wa-select',
-    name: 'Select',
+    name: 'Select | Web Awesome',
     description: 'Selects allow you to choose items from a menu of predefined options.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'size',
@@ -2984,12 +3179,29 @@ export const components: ComponentInfo[] = [
         description: 'icon - The container that wraps the expand icon.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--show-duration',
+        description: 'The duration of the show animation.',
+        default: '100ms',
+      },
+      {
+        name: '--hide-duration',
+        description: 'The duration of the hide animation.',
+        default: '100ms',
+      },
+      {
+        name: '--tag-max-size',
+        description: 'When using `multiple`, the max size of tags before their content is truncated.',
+        default: '10ch',
+      },
+    ],
   },
   {
     tagName: 'wa-skeleton',
-    name: 'Skeleton',
+    name: 'Skeleton | Web Awesome',
     description: 'Skeletons are used to provide a visual representation of where content will eventually be drawn.',
-    category: 'Feedback & Status',
+    category: 'Components',
     properties: [
       {
         name: 'effect',
@@ -3006,12 +3218,13 @@ export const components: ComponentInfo[] = [
         description: 'The skeleton\'s indicator which is responsible for its color and animation.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-slider',
-    name: 'Slider',
+    name: 'Slider | Web Awesome',
     description: 'Ranges allow the user to select a single value within a given range using a slider.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'hint',
@@ -3229,12 +3442,39 @@ export const components: ComponentInfo[] = [
         description: 'The tooltip\'s `arrow` part.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--track-size',
+        description: 'The height or width of the slider\'s track.',
+        default: '0.75em',
+      },
+      {
+        name: '--marker-width',
+        description: 'The width of each individual marker.',
+        default: '0.1875em',
+      },
+      {
+        name: '--marker-height',
+        description: 'The height of each individual marker.',
+        default: '0.1875em',
+      },
+      {
+        name: '--thumb-width',
+        description: 'The width of the thumb.',
+        default: '1.25em',
+      },
+      {
+        name: '--thumb-height',
+        description: 'The height of the thumb.',
+        default: '1.25em',
+      },
+    ],
   },
   {
     tagName: 'wa-spinner',
-    name: 'Spinner',
+    name: 'Spinner | Web Awesome',
     description: 'Spinners are used to show the progress of an indeterminate operation.',
-    category: 'Feedback & Status',
+    category: 'Components',
     properties: [],
     events: [],
     slots: [],
@@ -3244,12 +3484,13 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-split-panel',
-    name: 'Split Panel',
+    name: 'Split Panel | Web Awesome',
     description: 'Split panels display two adjacent panels, allowing the user to reposition them.',
-    category: 'Organization',
+    category: 'Components',
     properties: [
       {
         name: 'position',
@@ -3319,12 +3560,34 @@ export const components: ComponentInfo[] = [
         description: 'The divider that separates the start and end panels.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--divider-width',
+        description: 'The width of the visible divider.',
+        default: '4px',
+      },
+      {
+        name: '--divider-hit-area',
+        description: 'The invisible region around the divider where dragging can occur. This is',
+        default: '12px',
+      },
+      {
+        name: '--min',
+        description: 'The minimum allowed size of the primary panel.',
+        default: '0',
+      },
+      {
+        name: '--max',
+        description: 'The maximum allowed size of the primary panel.',
+        default: '100%',
+      },
+    ],
   },
   {
     tagName: 'wa-switch',
-    name: 'Switch',
+    name: 'Switch | Web Awesome',
     description: 'Switches allow the user to toggle an option on or off.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'name',
@@ -3425,12 +3688,13 @@ export const components: ComponentInfo[] = [
         description: 'The hint\'s wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-tab-group',
-    name: 'Tab Group',
+    name: 'Tab Group | Web Awesome',
     description: 'Tab groups organize content into a container that shows one section at a time.',
-    category: 'Navigation',
+    category: 'Components',
     properties: [
       {
         name: 'active',
@@ -3486,12 +3750,13 @@ export const components: ComponentInfo[] = [
         description: 'button__base - The scroll button\'s exported `base` part.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-tab-panel',
-    name: 'Tab Panel',
+    name: 'Tab Panel | Web Awesome',
     description: 'Tab panels are used inside tab groups to display tabbed content.',
-    category: 'Navigation',
+    category: 'Components',
     properties: [
       {
         name: 'name',
@@ -3514,12 +3779,13 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-tab',
-    name: 'Tab',
+    name: 'Tab | Web Awesome',
     description: 'Tabs are used inside tab groups to represent and activate tab panels.',
-    category: 'Navigation',
+    category: 'Components',
     properties: [
       {
         name: 'panel',
@@ -3554,12 +3820,13 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-tag',
-    name: 'Tag',
+    name: 'Tag | Web Awesome',
     description: 'Tags are used as labels to organize things or to indicate a selection.',
-    category: 'Feedback & Status',
+    category: 'Components',
     properties: [
       {
         name: 'variant',
@@ -3617,12 +3884,13 @@ export const components: ComponentInfo[] = [
         description: 'button__base - The remove button\'s exported `base` part.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-textarea',
-    name: 'Textarea',
+    name: 'Textarea | Web Awesome',
     description: 'Textareas collect data from the user and allow multiple lines of text.',
-    category: 'Form Controls',
+    category: 'Components',
     properties: [
       {
         name: 'name',
@@ -3772,12 +4040,13 @@ export const components: ComponentInfo[] = [
         description: 'The wrapper around the `<textarea>` control.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-tooltip',
-    name: 'Tooltip',
+    name: 'Tooltip | Web Awesome',
     description: 'Tooltips display additional information based on a specific action.',
-    category: 'Feedback & Status',
+    category: 'Components',
     properties: [
       {
         name: 'disabled',
@@ -3859,12 +4128,13 @@ export const components: ComponentInfo[] = [
         description: 'The tooltip\'s body where its content is rendered.',
       },
     ],
+    cssVariables: [],
   },
   {
     tagName: 'wa-tree-item',
-    name: 'Tree Item',
+    name: 'Tree Item | Web Awesome',
     description: 'A tree item serves as a hierarchical node that lives inside a tree.',
-    category: 'Navigation',
+    category: 'Components',
     properties: [
       {
         name: 'expanded',
@@ -3985,12 +4255,24 @@ export const components: ComponentInfo[] = [
         description: 'The checkbox\'s exported `label` part.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--show-duration',
+        description: 'The animation duration when expanding tree items.',
+        default: '200ms',
+      },
+      {
+        name: '--hide-duration',
+        description: 'The animation duration when collapsing tree items.',
+        default: '200ms',
+      },
+    ],
   },
   {
     tagName: 'wa-tree',
-    name: 'Tree',
+    name: 'Tree | Web Awesome',
     description: 'Trees allow you to display a hierarchical list of selectable tree items. Items with children can be expanded and collapsed as desired by the user.',
-    category: 'Navigation',
+    category: 'Components',
     properties: [],
     events: [],
     slots: [
@@ -4009,12 +4291,39 @@ export const components: ComponentInfo[] = [
         description: 'The component\'s base wrapper.',
       },
     ],
+    cssVariables: [
+      {
+        name: '--indent-size',
+        description: 'The size of the indentation for nested items.',
+        default: 'var(--wa-space-m)',
+      },
+      {
+        name: '--indent-guide-color',
+        description: 'The color of the indentation line.',
+        default: 'var(--wa-color-surface-border)',
+      },
+      {
+        name: '--indent-guide-offset',
+        description: 'The amount of vertical spacing to leave between the top and bottom of the',
+        default: '0',
+      },
+      {
+        name: '--indent-guide-style',
+        description: 'The style of the indentation line, e.g. solid, dotted, dashed.',
+        default: 'solid',
+      },
+      {
+        name: '--indent-guide-width',
+        description: 'The width of the indentation line.',
+        default: '0',
+      },
+    ],
   },
   {
     tagName: 'wa-zoomable-frame',
-    name: 'Zoomable Frame',
+    name: 'Zoomable Frame | Web Awesome',
     description: 'Zoomable frames render iframe content with zoom and interaction controls.',
-    category: 'Imagery',
+    category: 'Components',
     properties: [
       {
         name: 'allowfullscreen',
@@ -4085,5 +4394,6 @@ export const components: ComponentInfo[] = [
         description: 'out-button - The zoom out button.',
       },
     ],
+    cssVariables: [],
   },
 ]

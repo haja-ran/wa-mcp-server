@@ -1,6 +1,6 @@
 import fs from 'fs';
-import matter from 'gray-matter';
 import path from 'path';
+import * as cheerio from 'cheerio';
 import { fetchComponentNames, getComponentDocUrl, getComponentTsUrl } from './config.js';
 
 interface ComponentInfo {
@@ -26,6 +26,11 @@ interface ComponentInfo {
     name: string;
     description: string;
   }>;
+  cssVariables: Array<{
+    name: string;
+    description: string;
+    default?: string;
+  }>;
 }
 
 async function fetchComponents(): Promise<ComponentInfo[]> {
@@ -47,11 +52,10 @@ async function fetchComponents(): Promise<ComponentInfo[]> {
       let category = 'Other';
       if (response.ok) {
         const content = await response.text();
-        const parsed = matter(content);
-        const data = parsed.data as any;
-        title = data.title || title;
-        description = data.description || '';
-        category = data.category || 'Other';
+        const $ = cheerio.load(content);
+        title = $('title').text().split(' - ')[0] || title;
+        description = $('meta[name="description"]').attr('content') || '';
+        category = 'Components';
       }
 
       // Fetch TS code
@@ -62,12 +66,14 @@ async function fetchComponents(): Promise<ComponentInfo[]> {
       let events: ComponentInfo['events'] = [];
       let slots: ComponentInfo['slots'] = [];
       let cssParts: ComponentInfo['cssParts'] = [];
+      let cssVariables: ComponentInfo['cssVariables'] = [];
       if (tsResponse.ok) {
         const tsContent = await tsResponse.text();
         properties = parseProperties(tsContent);
         events = parseEvents(tsContent);
         slots = parseSlots(tsContent);
         cssParts = parseCssParts(tsContent);
+        cssVariables = parseCssVariablesFromTs(tsContent);
       }
 
       const component: ComponentInfo = {
@@ -79,6 +85,7 @@ async function fetchComponents(): Promise<ComponentInfo[]> {
         events,
         slots,
         cssParts,
+        cssVariables,
       };
 
       components.push(component);
@@ -96,6 +103,7 @@ function generateComponentsFile(components: ComponentInfo[]): string {
     const evts = JSON.stringify(c.events, null, 4).replace(/\n/g, '\n    ');
     const slts = JSON.stringify(c.slots, null, 4).replace(/\n/g, '\n    ');
     const css = JSON.stringify(c.cssParts, null, 4).replace(/\n/g, '\n    ');
+    const cssVars = JSON.stringify(c.cssVariables, null, 4).replace(/\n/g, '\n    ');
     return `  {
     tagName: '${c.tagName}',
     name: '${c.name.replace(/'/g, "\\'")}',
@@ -105,6 +113,7 @@ function generateComponentsFile(components: ComponentInfo[]): string {
     events: ${evts},
     slots: ${slts},
     cssParts: ${css},
+    cssVariables: ${cssVars},
   }`;
   }).join(',\n');
 
@@ -130,6 +139,11 @@ function generateComponentsFile(components: ComponentInfo[]): string {
   cssParts: Array<{
     name: string;
     description: string;
+  }>;
+  cssVariables: Array<{
+    name: string;
+    description: string;
+    default?: string;
   }>;
 }
 
@@ -254,6 +268,25 @@ function parseCssParts(tsContent: string): ComponentInfo['cssParts'] {
     cssParts.push({ name, description });
   }
   return cssParts;
+}
+
+function parseCssVariablesFromTs(tsContent: string): ComponentInfo['cssVariables'] {
+  const cssVars: ComponentInfo['cssVariables'] = [];
+  const cssRegex = /\*\s*@cssproperty\s*\[([^\]]+)\]\s*-\s*(.+)/g;
+  let match: RegExpExecArray | null;
+  while (true) {
+    match = cssRegex.exec(tsContent);
+    if (match === null) break;
+    const prop = match[1];
+    const description = match[2];
+    const propMatch = prop.match(/--([^=]+)(?:=(.+))?/);
+    if (propMatch) {
+      const name = '--' + propMatch[1];
+      const defaultVal = propMatch[2];
+      cssVars.push({ name, description, default: defaultVal });
+    }
+  }
+  return cssVars;
 }
 
 async function main() {

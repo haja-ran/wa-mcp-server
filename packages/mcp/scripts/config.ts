@@ -4,7 +4,7 @@ export const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/shoelace-style
 export const GITHUB_API_BASE_URL = 'https://api.github.com/repos/shoelace-style/webawesome';
 
 export const getComponentDocUrl = (name: string): string =>
-  `${GITHUB_BASE_URL}/docs/docs/components/${name}.md`;
+  `https://webawesome.com/docs/components/${name}`;
 
 export const getComponentTsUrl = (name: string): string =>
   `${GITHUB_BASE_URL}/src/components/${name}/${name}.ts`;
