@@ -1,10 +1,19 @@
 {
   "name": "wa-mcp",
   "displayName": "Web Awesome MCP",
-  "publisher": "shabang",
+  "publisher": "sha-bang",
   "description": "VSCode extension that provides the Web Awesome MCP server. Requires the @sha-bang/wa-mcp package to be installed separately.",
   "license": "ISC",
   "version": "1.2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haja-ran/wa-mcp-server.git",
+    "directory": "packages/vscode-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/haja-ran/wa-mcp-server/issues"
+  },
+  "homepage": "https://github.com/haja-ran/wa-mcp-server/tree/main/packages/vscode-extension#readme",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -15,6 +24,7 @@
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
+  "icon": "icon.png",
   "contributes": {
     "configuration": {
       "title": "Web Awesome MCP",
@@ -40,6 +50,12 @@
     "package": "npm run compile && node package-script.js",
     "sync-version": "node sync-version.js"
   },
+  "files": [
+    "out/",
+    "README.md",
+    "LICENSE",
+    "icon.png"
+  ],
   "devDependencies": {
     "@types/vscode": "^1.74.0",
     "@types/node": "18.x",
