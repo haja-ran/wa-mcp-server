@@ -1,4 +1,5 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
+import { validateInput, themeCustomizerSchema } from '../lib/validation.js'
 
 export const themeCustomizerTool: Tool = {
   name: 'themeCustomizer',
@@ -16,8 +17,11 @@ export const themeCustomizerTool: Tool = {
 }
 
 themeCustomizerTool.handler = async (args: { variables: Record<string, string> }) => {
+  // Validate input
+  const validatedArgs = validateInput(themeCustomizerSchema, args)
+
   let css = ':root {\n'
-  for (const [key, value] of Object.entries(args.variables)) {
+  for (const [key, value] of Object.entries(validatedArgs.variables)) {
     css += `  ${key}: ${value};\n`
   }
   css += '}\n'

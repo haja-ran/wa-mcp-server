@@ -1,4 +1,5 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
+import { validateInput, getUsageGuideSchema } from '../lib/validation.js'
 
 const USAGE_GUIDE_URL = 'https://raw.githubusercontent.com/shoelace-style/webawesome/refs/heads/next/packages/webawesome/docs/docs/usage.md'
 
@@ -11,7 +12,9 @@ export const getUsageGuideTool: Tool = {
   },
 }
 
-getUsageGuideTool.handler = async () => {
+getUsageGuideTool.handler = async (args: any = {}) => {
+  // Validate input (should be empty object)
+  validateInput(getUsageGuideSchema, args)
   try {
     const response = await fetch(USAGE_GUIDE_URL)
     if (!response.ok) {

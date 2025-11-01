@@ -1,5 +1,6 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
 import { components } from '../data/components.js'
+import { validateInput, listComponentsSchema } from '../lib/validation.js'
 
 export const listComponentsTool: Tool = {
   name: 'listComponents',
@@ -16,10 +17,13 @@ export const listComponentsTool: Tool = {
 }
 
 listComponentsTool.handler = async (args: any) => {
+  // Validate input
+  const validatedArgs = validateInput(listComponentsSchema, args)
+
   let filteredComponents = components
 
-  if (args.category) {
-    filteredComponents = components.filter(c => c.category.toLowerCase().includes(args.category.toLowerCase()))
+  if (validatedArgs.category) {
+    filteredComponents = components.filter(c => c.category.toLowerCase().includes(validatedArgs.category!.toLowerCase()))
   }
 
   const result = filteredComponents.map(c => ({
