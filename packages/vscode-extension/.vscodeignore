@@ -1,0 +1,46 @@
+# Source files
+src/
+**/*.ts
+**/*.map
+tsconfig.json
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build artifacts
+**/*.test.*
+**/*.spec.*
+
+# Development files
+.vscode/
+.vscodeignore
+.gitignore
+.eslintrc*
+eslint.config.js
+
+# Scripts
+package-script.js
+sync-version.js
+
+# Git
+.git/
+.github/
+**/.git/
+**/.github/
+
+# Generated files
+**/*.vsix
+wa-mcp-*.vsix
+
+# Testing
+**/*.test.js
+**/*.spec.js
+
+# Include these files explicitly
+!out/**/*.js
+!README.md
+!LICENSE
+!package.json
+!icon.png
+```

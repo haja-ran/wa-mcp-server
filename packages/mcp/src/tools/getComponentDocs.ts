@@ -1,5 +1,6 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
 import { components } from '../data/components.js'
+import { validateInput, getComponentDocsSchema } from '../lib/validation.js'
 
 export const getComponentDocsTool: Tool = {
   name: 'getComponentDocs',
@@ -17,9 +18,12 @@ export const getComponentDocsTool: Tool = {
 }
 
 getComponentDocsTool.handler = async (args: { tagName: string }) => {
-  const component = components.find(c => c.tagName === args.tagName)
+  // Validate input
+  const validatedArgs = validateInput(getComponentDocsSchema, args)
+
+  const component = components.find(c => c.tagName === validatedArgs.tagName)
   if (!component) {
-    throw new Error(`Component ${args.tagName} not found.`)
+    throw new Error(`Component ${validatedArgs.tagName} not found.`)
   }
 
   const docs = {

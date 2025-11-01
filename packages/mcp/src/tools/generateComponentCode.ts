@@ -1,5 +1,6 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
 import { components } from '../data/components.js'
+import { validateInput, generateComponentCodeSchema, sanitizeProperties, sanitizeHtmlAttribute } from '../lib/validation.js'
 
 export const generateComponentCodeTool: Tool = {
   name: 'generateComponentCode',
@@ -25,25 +26,33 @@ export const generateComponentCodeTool: Tool = {
 }
 
 generateComponentCodeTool.handler = async (args: { tagName: string, properties?: Record<string, any>, content?: string }) => {
-  const component = components.find(c => c.tagName === args.tagName)
+  // Validate input
+  const validatedArgs = validateInput(generateComponentCodeSchema, args)
+
+  const component = components.find(c => c.tagName === validatedArgs.tagName)
   if (!component) {
-    throw new Error(`Component ${args.tagName} not found.`)
+    throw new Error(`Component ${validatedArgs.tagName} not found.`)
   }
 
   let attributes = ''
-  if (args.properties) {
-    for (const [key, value] of Object.entries(args.properties)) {
+  if (validatedArgs.properties) {
+    // Sanitize properties to prevent XSS
+    const sanitizedProps = sanitizeProperties(validatedArgs.properties)
+
+    for (const [key, value] of Object.entries(sanitizedProps)) {
       if (typeof value === 'boolean') {
         attributes += value ? ` ${key}` : ''
-      }
-      else {
-        attributes += ` ${key}="${value}"`
+      } else {
+        // Additional sanitization for attribute values
+        const sanitizedValue = typeof value === 'string' ? sanitizeHtmlAttribute(value) : String(value)
+        attributes += ` ${key}="${sanitizedValue}"`
       }
     }
   }
 
-  const content = args.content || ''
-  const html = `<${args.tagName}${attributes}>${content}</${args.tagName}>`
+  // Sanitize content (already validated by schema)
+  const content = validatedArgs.content || ''
+  const html = `<${validatedArgs.tagName}${attributes}>${content}</${validatedArgs.tagName}>`
 
   return {
     content: [

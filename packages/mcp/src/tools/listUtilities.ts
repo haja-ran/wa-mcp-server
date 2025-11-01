@@ -1,5 +1,6 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
 import { utilities } from '../data/utilities.js'
+import { validateInput, listUtilitiesSchema } from '../lib/validation.js'
 
 export const listUtilitiesTool: Tool = {
   name: 'listUtilities',
@@ -16,10 +17,13 @@ export const listUtilitiesTool: Tool = {
 }
 
 listUtilitiesTool.handler = async (args: any) => {
+  // Validate input
+  const validatedArgs = validateInput(listUtilitiesSchema, args)
+
   let filteredUtilities = utilities
 
-  if (args.category) {
-    filteredUtilities = utilities.filter(u => u.category.toLowerCase().includes(args.category.toLowerCase()))
+  if (validatedArgs.category) {
+    filteredUtilities = utilities.filter(u => u.category.toLowerCase().includes(validatedArgs.category!.toLowerCase()))
   }
 
   const result = filteredUtilities.map(u => ({
