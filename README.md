@@ -1,6 +1,7 @@
-# Web Awesome MCP Server Monorepo
-
-<img width="180" height="135" alt="wa-mcp" style="margin: auto; display: inline-block;" src="https://github.com/user-attachments/assets/880b429a-2641-4e32-81f2-22bd68e7bd27" />
+<div align="center">
+   <h1>Web Awesome MCP Server Monorepo</h1>
+   <img width="180" height="135" alt="wa-mcp" style="margin: auto; display: inline-block;" src="https://github.com/user-attachments/assets/880b429a-2641-4e32-81f2-22bd68e7bd27" />
+</div>
 
 A **monorepo** containing tools and servers for integrating **Web Awesome** components with AI assistants and development workflows through the **Model Context Protocol (MCP)**.
 
