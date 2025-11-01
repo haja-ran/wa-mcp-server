@@ -25,7 +25,7 @@
   "homepage": "https://github.com/haja-ran/wa-mcp-server#readme",
   "description": "",
   "workspaces": [
-    "packages/mcp"
+    "packages/*"
   ],
   "devDependencies": {}
 }
