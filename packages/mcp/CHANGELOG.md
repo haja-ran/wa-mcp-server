@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/haja-ran/wa-mcp/compare/v1.1.1...v1.2.0) (2025-11-01)
+
+
+### Features
+
+* copy README from root to packages/mcp after build ([9cdb817](https://github.com/haja-ran/wa-mcp/commit/9cdb81702b823183bfe29b8b15518b51a2d6c752))
+
 ## [1.1.1](https://github.com/haja-ran/wa-mcp/compare/v1.1.0...v1.1.1) (2025-11-01)
 
 
