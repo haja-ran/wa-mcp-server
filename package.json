@@ -10,6 +10,7 @@
     "lint": "npm run lint --workspace=packages/mcp",
     "fetch-data": "npm run fetch-data --workspace=packages/mcp",
     "release": "npm run release --workspace=packages/mcp",
+    "package:vscode": "npm run package --workspace=packages/vscode-extension",
     "inspector": "npx @modelcontextprotocol/inspector"
   },
   "repository": {
