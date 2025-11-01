@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/haja-ran/wa-mcp/compare/v1.1.0...v1.1.1) (2025-11-01)
+
+
+### Bug Fixes
+
+* populate cssVariables property in component data ([78348d1](https://github.com/haja-ran/wa-mcp/commit/78348d1359254f38c7d7b9835c13ffb9e8ba39e6))
+* update getComponentDocs test to expect full component name ([ac4e2f5](https://github.com/haja-ran/wa-mcp/commit/ac4e2f5cb0c6c3682458b323b41ec5c1783a43e9))
+
 # [1.1.0](https://github.com/haja-ran/wa-mcp-server/compare/v1.0.0...v1.1.0) (2025-10-31)
 
 

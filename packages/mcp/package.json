@@ -1,6 +1,6 @@
 {
   "name": "@sha-bang/wa-mcp",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Local MCP server for Web Awesome components",
   "main": "dist/index.js",
   "bin": {
