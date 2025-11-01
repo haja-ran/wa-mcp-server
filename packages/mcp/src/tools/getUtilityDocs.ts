@@ -1,5 +1,6 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
 import { utilities } from '../data/utilities.js'
+import { validateInput, getUtilityDocsSchema } from '../lib/validation.js'
 
 export const getUtilityDocsTool: Tool = {
   name: 'getUtilityDocs',
@@ -17,9 +18,12 @@ export const getUtilityDocsTool: Tool = {
 }
 
 getUtilityDocsTool.handler = async (args: { className: string }) => {
-  const utility = utilities.find(u => u.className === args.className)
+  // Validate input
+  const validatedArgs = validateInput(getUtilityDocsSchema, args)
+
+  const utility = utilities.find(u => u.className === validatedArgs.className)
   if (!utility) {
-    throw new Error(`Utility ${args.className} not found.`)
+    throw new Error(`Utility ${validatedArgs.className} not found.`)
   }
 
   const docs = {
